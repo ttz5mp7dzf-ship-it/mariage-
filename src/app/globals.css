@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFFDF9; /* Ivoire très pur */
-  --foreground: #0F1C3F; /* Bleu royal ultra profond */
+  --background: #1A0B08; /* Fond Royal Sombre */
+  --foreground: #FDFBF7; /* Ivoire lumineux */
   
-  --c-gold: #C5A059;
+  --c-gold: #D4AF37;
   --c-gold-light: #E8D090;
   --c-gold-dark: #8E6F33;
   

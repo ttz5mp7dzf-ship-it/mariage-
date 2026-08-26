@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Splash from "@/components/Splash";
 import Hero from "@/components/Hero";
 import GalerieRoyale from "@/components/GalerieRoyale";
@@ -17,13 +18,14 @@ export default function Home() {
 
   return (
     <>
-      {showSplash && <Splash onEnter={() => setShowSplash(false)} />}
+      <AnimatePresence>
+        {showSplash && <Splash onEnter={() => setShowSplash(false)} />}
+      </AnimatePresence>
 
-      {!showSplash && (
-        <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
-          <RoyalNavbar />
+      <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
+        <RoyalNavbar />
 
-          {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
+        {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
           <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
 
           {/* Halos de lumière chaude animés */}
@@ -44,7 +46,7 @@ export default function Home() {
           </div>
 
           <div className="relative z-10 w-full overflow-hidden">
-            <Hero />
+            <Hero isEntered={!showSplash} />
 
             <AfricanDivider />
 
@@ -99,7 +101,6 @@ export default function Home() {
             </div>
           </div>
         </main>
-      )}
     </>
   );
 }

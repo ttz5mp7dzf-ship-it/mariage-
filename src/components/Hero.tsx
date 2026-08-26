@@ -5,14 +5,18 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { CheckCircle, Gift, BookOpen, ShoppingBag } from "lucide-react";
 
-export default function Hero() {
+export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [doorsOpen, setDoorsOpen] = useState(false);
 
   useEffect(() => {
-    // Trigger door opening animation shortly after mount
-    const timer = setTimeout(() => setDoorsOpen(true), 500);
-    
+    if (isEntered) {
+      const timer = setTimeout(() => setDoorsOpen(true), 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isEntered]);
+
+  useEffect(() => {
     const targetDate = new Date("2026-10-10T12:00:00").getTime();
     const interval = setInterval(() => {
       const difference = targetDate - new Date().getTime();
@@ -25,10 +29,7 @@ export default function Hero() {
         });
       }
     }, 1000);
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (

@@ -64,7 +64,7 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
 
   const handleEnter = () => {
     setStage(4);
-    setTimeout(onEnter, 2000);
+    setTimeout(onEnter, 600);
   };
 
   // Génération stable des motifs de pagne (pas de Math.random() dans le render)
@@ -84,9 +84,9 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
     <AnimatePresence>
       {stage < 4 && (
         <motion.div
-          exit={{ opacity: 0, filter: "blur(20px)", scale: 1.2 }}
-          transition={{ duration: 2, ease: "easeInOut" }}
-          className="fixed inset-0 z-50 overflow-hidden bg-black"
+          exit={{ opacity: 0, scale: 1.05 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="fixed inset-0 z-50 overflow-hidden bg-[#1A0B08]"
         >
           {/* Photo de fond avec zoom lent */}
           <motion.div
