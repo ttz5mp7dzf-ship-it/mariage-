@@ -57,23 +57,25 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
             ))}
           </AnimatePresence>
 
-          {/* PORTES ROYALES */}
+          {/* PORTES ROYALES AFRICAINES (Splash) */}
           <motion.div
             initial={{ rotateY: 0 }} animate={{ rotateY: stage >= 1 ? -120 : 0 }} transition={{ duration: 4, ease: "easeInOut" }}
             style={{ transformOrigin: "left center" }}
-            className="absolute top-0 left-0 w-1/2 h-full bg-[#FFFDF9] border-r border-[#C5A059] flex justify-end items-center z-20 shadow-[20px_0_50px_rgba(0,0,0,0.8)]"
+            className="absolute top-0 left-0 w-1/2 h-full bg-[#1A0B08] border-r-[6px] border-african-gold flex justify-end items-center z-20 shadow-[20px_0_50px_rgba(0,0,0,0.9)]"
           >
-            <div className="w-full h-full opacity-40" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%23C5A059\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'%3E%3Cpath d=\\'M0 40L40 0H20L0 20M40 40V20L20 40\\'/ %3E%3C/g%3E%3C/svg%3E')" }}></div>
-            <div className="absolute right-4 w-6 h-48 bg-gradient-to-b from-[#E8D090] via-[#C5A059] to-[#8E6F33] rounded-full shadow-2xl border border-white/50"></div>
+            <div className="absolute inset-0 opacity-80 mix-blend-luminosity bg-cover bg-center" style={{ backgroundImage: "url('/motif-3.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0B08]/90"></div>
+            <div className="absolute right-4 w-6 h-48 bg-african-gold rounded-full shadow-2xl border-2 border-[#1A0B08]"></div>
           </motion.div>
 
           <motion.div
             initial={{ rotateY: 0 }} animate={{ rotateY: stage >= 1 ? 120 : 0 }} transition={{ duration: 4, ease: "easeInOut" }}
             style={{ transformOrigin: "right center" }}
-            className="absolute top-0 right-0 w-1/2 h-full bg-[#FFFDF9] border-l border-[#C5A059] flex justify-start items-center z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.8)]"
+            className="absolute top-0 right-0 w-1/2 h-full bg-[#1A0B08] border-l-[6px] border-african-gold flex justify-start items-center z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.9)]"
           >
-            <div className="w-full h-full opacity-40" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%23C5A059\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'%3E%3Cpath d=\\'M0 40L40 0H20L0 20M40 40V20L20 40\\'/ %3E%3C/g%3E%3C/svg%3E')" }}></div>
-            <div className="absolute left-4 w-6 h-48 bg-gradient-to-b from-[#E8D090] via-[#C5A059] to-[#8E6F33] rounded-full shadow-2xl border border-white/50"></div>
+            <div className="absolute inset-0 opacity-80 mix-blend-luminosity bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-3.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1A0B08]/90"></div>
+            <div className="absolute left-4 w-6 h-48 bg-african-gold rounded-full shadow-2xl border-2 border-[#1A0B08]"></div>
           </motion.div>
 
           {/* CONTENU CENTRAL */}
