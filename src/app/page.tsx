@@ -19,36 +19,27 @@ export default function Home() {
       {showSplash && <Splash onEnter={() => setShowSplash(false)} />}
       
       {!showSplash && (
-        <main className="w-full relative min-h-screen">
-          {/* FOND FIXE UNIFIÉ POUR TOUT LE SITE (L'allée royale) */}
-          <div className="fixed inset-0 z-[-1] bg-[#0F1C3F]">
-            <Image 
-              src="/palais.jpg" 
-              alt="Jardin Royal" 
-              fill 
-              className="object-cover object-center opacity-70 mix-blend-screen" 
-              priority
-            />
-            {/* Brume et vignettage constants */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_20%,_#0F1C3F_100%)]"></div>
+        <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
+          {/* Texture de fond : Terre/Bois subtil avec effet coucher de soleil */}
+          <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
+          
+          {/* Poussière lumineuse / Lumière chaude du coucher de soleil */}
+          <div className="fixed inset-0 z-0 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-african-copper/10 blur-[120px] mix-blend-screen" />
+            <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-african-terra/10 blur-[150px] mix-blend-screen" />
+            <div className="absolute bottom-[-20%] left-[20%] w-[70vw] h-[70vw] rounded-full bg-african-gold/10 blur-[130px] mix-blend-screen" />
             
-            {/* LUEURS FLORALES (Couleurs du mariage: Vert, Rouge, Jaune, Bleu, Orange, Marron, Rose) */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#7A0A15] rounded-full mix-blend-screen filter blur-[150px] opacity-40 animate-pulse-slow"></div>
-            <div className="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] bg-[#D64D8B] rounded-full mix-blend-screen filter blur-[120px] opacity-30"></div>
-            <div className="absolute bottom-[-10%] left-[20%] w-[50vw] h-[50vw] bg-[#E86A17] rounded-full mix-blend-screen filter blur-[150px] opacity-30 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-            <div className="absolute top-[50%] left-[-20%] w-[40vw] h-[40vw] bg-[#234226] rounded-full mix-blend-screen filter blur-[130px] opacity-40"></div>
-            <div className="absolute bottom-[20%] right-[-10%] w-[45vw] h-[45vw] bg-[#F4C430] rounded-full mix-blend-screen filter blur-[150px] opacity-20" style={{ animationDelay: '4s' }}></div>
-
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#4A2E15]/30 to-[#0F1C3F]/90"></div>
+            {/* Subtil motif géométrique africain en overlay (SVG pattern) */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23CD7F32\\' fill-opacity=\\'1\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg\\'%3E')" }} />
           </div>
 
           <div className="relative z-10 w-full overflow-hidden">
             <Hero />
             
             {/* Transition douce entre Hero et la suite */}
-            <div className="w-full h-32 bg-gradient-to-b from-transparent to-[#0F1C3F]/80"></div>
+            <div className="w-full h-32 bg-gradient-to-b from-transparent to-[#2A1610]/80"></div>
             
-            <div className="bg-[#0F1C3F]/80 backdrop-blur-sm">
+            <div className="bg-[#2A1610]/80 backdrop-blur-sm">
               <InvitationOfficielle />
               <GalerieRoyale />
               <Cadeaux />
@@ -56,7 +47,7 @@ export default function Home() {
               <Uniforme />
               <Localisation />
               
-              <footer className="py-24 text-center text-[#FFFDF9] relative overflow-hidden">
+              <footer className="py-24 text-center text-african-ivory relative overflow-hidden">
                 <div className="relative z-10 max-w-3xl mx-auto px-4">
                   <p className="text-2xl md:text-3xl font-sans font-light mb-8 italic">
                     Merci de traverser ce voyage avec nous.<br/>

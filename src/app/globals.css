@@ -14,19 +14,40 @@
 }
 
 @theme inline {
-  --color-luxury-bg: #FFFDF9;
-  --color-luxury-blue: #0F1C3F;
-  --color-luxury-gold: #C5A059;
-  --color-luxury-red: #7A0A15;
-  --color-luxury-green: #234226;
-  --color-luxury-yellow: #F4C430;
-  --color-luxury-orange: #E86A17;
-  --color-luxury-brown: #4A2E15;
-  --color-luxury-pink: #D64D8B;
+  /* African Royal Palette */
+  --color-african-terra: #C04A2A; /* Terre cuite */
+  --color-african-brown: #3E2723; /* Brun profond */
+  --color-african-sand: #E4D5B7; /* Sable */
+  --color-african-ivory: #FDFBF7; /* Ivoire */
+  --color-african-bronze: #CD7F32; /* Bronze */
+  --color-african-copper: #B87333; /* Cuivre */
+  --color-african-gold: #D4AF37; /* Or */
+  
+  --color-african-bg: #2d1b11; /* Dark wood/brown background */
+  
+  --animate-pulse-slow: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-door-open-left: door-open-left 2s ease-in-out forwards;
+  --animate-door-open-right: door-open-right 2s ease-in-out forwards;
+  --animate-fade-in-slow: fade-in-slow 2.5s ease-out forwards;
   
   --font-sans: var(--font-poppins), sans-serif;
   --font-heading: var(--font-cormorant), serif;
   --font-deco: var(--font-cinzel), serif;
+}
+
+@keyframes door-open-left {
+  0% { transform: scaleX(1) translateX(0); transform-origin: left; }
+  100% { transform: scaleX(0) translateX(-100%); transform-origin: left; display: none; }
+}
+
+@keyframes door-open-right {
+  0% { transform: scaleX(1) translateX(0); transform-origin: right; }
+  100% { transform: scaleX(0) translateX(100%); transform-origin: right; display: none; }
+}
+
+@keyframes fade-in-slow {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 html {

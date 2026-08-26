@@ -258,20 +258,18 @@ export default function RsvpMenu() {
                 </div>
 
                 <div className="mt-16 text-center">
-                  <h4 className="text-4xl md:text-5xl font-heading text-[#FFFDF9] mb-2">Votre Don</h4>
-                  <p className="text-sm font-sans uppercase tracking-[0.2em] text-[#C5A059] mb-10">Participez à notre joie</p>
+                  <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Votre Offrande</h4>
+                  <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-gold mb-10">Participez à notre joie</p>
                   
-                  <div className="max-w-2xl mx-auto bg-[#0F1C3F]/80 p-8 rounded-2xl border border-[#C5A059]/20 shadow-xl backdrop-blur-md">
-                    <select {...register("gift")} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-[#C5A059] text-center border-b border-[#C5A059]/30">
-                      <option value="" className="bg-[#0F1C3F]">Je choisis mon type de cadeau...</option>
-                      <option value="Mobilier" className="bg-[#0F1C3F]">Mobilier</option>
-                      <option value="Électroménager" className="bg-[#0F1C3F]">Électroménager</option>
-                      <option value="Décoration" className="bg-[#0F1C3F]">Décoration</option>
-                      <option value="Enveloppe d'argent" className="bg-[#0F1C3F]">Enveloppe d'argent</option>
-                      <option value="Chèque Cadeau" className="bg-[#0F1C3F]">Chèque Cadeau</option>
-                      <option value="Voyage" className="bg-[#0F1C3F]">Voyage</option>
-                      <option value="Expérience" className="bg-[#0F1C3F]">Expérience</option>
-                      <option value="Surprise" className="bg-[#0F1C3F]">C'est une surprise !</option>
+                  <div className="max-w-2xl mx-auto bg-[#3E2723]/80 p-8 rounded-2xl border border-african-gold/20 shadow-xl backdrop-blur-md">
+                    <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Quelle sera la nature de votre cadeau ?</label>
+                    <select {...register("gift")} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold text-center border-b border-african-gold/30">
+                      <option value="" className="bg-[#2A1610]">Je choisis mon type de cadeau...</option>
+                      <option value="Maison & mobilier" className="bg-[#2A1610]">Maison & mobilier</option>
+                      <option value="Électronique & électroménager" className="bg-[#2A1610]">Électronique & électroménager</option>
+                      <option value="Don en numéraire" className="bg-[#2A1610]">Don en numéraire</option>
+                      <option value="Expériences" className="bg-[#2A1610]">Expériences</option>
+                      <option value="Surprise" className="bg-[#2A1610]">C'est une surprise !</option>
                     </select>
                   </div>
                 </div>
@@ -281,22 +279,22 @@ export default function RsvpMenu() {
 
           <div className="pt-32 pb-16 text-center relative">
             <button type="submit" disabled={status === "loading"} className="relative group inline-block">
-              {/* Le Sceau Royal */}
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-[#7A0A15] to-[#4A040B] shadow-[0_10px_30px_rgba(122,10,21,0.6)] flex items-center justify-center border-4 border-[#C5A059] group-hover:scale-95 group-active:scale-90 transition-transform duration-300">
-                <div className="absolute inset-2 border-2 border-dashed border-[#C5A059]/50 rounded-full animate-[spin_20s_linear_infinite]"></div>
-                <div className="absolute inset-4 border border-[#C5A059]/30 rounded-full"></div>
+              {/* Le Sceau Royal Africain */}
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-african-terra to-[#3E2723] shadow-[0_10px_30px_rgba(192,74,42,0.6)] flex items-center justify-center border-4 border-african-gold group-hover:scale-95 group-active:scale-90 transition-transform duration-300">
+                <div className="absolute inset-2 border-2 border-dashed border-african-gold/50 rounded-full animate-[spin_20s_linear_infinite]"></div>
+                <div className="absolute inset-4 border border-african-gold/30 rounded-full"></div>
                 
                 <div className="relative z-10 flex flex-col items-center">
-                  <span className="font-deco text-[#C5A059] text-3xl md:text-4xl mb-1">E&L</span>
-                  <span className="font-sans text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+                  <span className="font-deco text-african-gold text-3xl md:text-4xl mb-1">E&L</span>
+                  <span className="font-sans text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-african-gold font-bold">
                     {status === "loading" ? "Scellement..." : "Confirmer"}
                   </span>
                 </div>
-                <div className="absolute top-2 left-2 w-10 h-10 bg-white/20 rounded-full blur-sm"></div>
+                <div className="absolute top-2 left-2 w-10 h-10 bg-white/10 rounded-full blur-sm"></div>
               </div>
-              <div className="absolute inset-0 bg-[#C5A059]/30 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-african-gold/30 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </button>
-            <p className="mt-8 font-sans text-xs uppercase tracking-widest text-[#C5A059]/80">Apposer votre sceau</p>
+            <p className="mt-8 font-sans text-xs uppercase tracking-widest text-african-gold/80">Apposer votre sceau</p>
           </div>
         </form>
       </div>
