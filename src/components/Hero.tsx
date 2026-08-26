@@ -64,7 +64,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <section className="relative min-h-screen w-full flex flex-col items-center justify-center pt-20 pb-32">
+      <section id="accueil" className="relative min-h-screen w-full flex flex-col items-center justify-center pt-20 pb-32 scroll-mt-20">
         
         {/* Cadre de la cour royale (Terre cuite & Or) */}
         <div className="relative w-full max-w-[90vw] md:max-w-4xl h-[60vh] md:h-[75vh] rounded-t-[100px] md:rounded-t-[200px] mx-auto shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-4 border-african-gold border-b-0 overflow-hidden">
@@ -125,7 +125,14 @@ export default function Hero() {
           transition={{ delay: 2, duration: 1 }}
           className="mt-16 relative z-20 flex flex-wrap justify-center gap-4 px-4 w-full max-w-4xl"
         >
-          <a href="#rsvp" className="group relative w-full sm:w-auto">
+          <a
+            href="#rsvp"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group relative w-full sm:w-auto"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-african-gold to-african-copper rounded-full blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-[#2A1610] border border-african-gold/50 px-8 py-4 rounded-full flex items-center justify-center gap-3 text-african-ivory font-sans font-bold uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform duration-300">
               <CheckCircle size={18} className="text-african-gold" />
@@ -133,7 +140,14 @@ export default function Hero() {
             </div>
           </a>
 
-          <a href="#cadeaux" className="group relative w-full sm:w-auto">
+          <a
+            href="#cadeaux"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("cadeaux")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group relative w-full sm:w-auto"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-african-terra to-african-brown rounded-full blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-[#2A1610] border border-african-terra/50 px-8 py-4 rounded-full flex items-center justify-center gap-3 text-african-ivory font-sans uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform duration-300">
               <Gift size={18} className="text-african-terra" />
@@ -141,7 +155,14 @@ export default function Hero() {
             </div>
           </a>
 
-          <a href="#histoire" className="group relative w-full sm:w-auto">
+          <a
+            href="#histoire"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("histoire")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group relative w-full sm:w-auto"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-african-bronze to-african-brown rounded-full blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-[#2A1610] border border-african-bronze/50 px-8 py-4 rounded-full flex items-center justify-center gap-3 text-african-ivory font-sans uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform duration-300">
               <BookOpen size={18} className="text-african-bronze" />
@@ -149,7 +170,14 @@ export default function Hero() {
             </div>
           </a>
 
-          <a href="#pagne" className="group relative w-full sm:w-auto">
+          <a
+            href="#pagne"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("pagne")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group relative w-full sm:w-auto"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-african-copper to-african-gold rounded-full blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-[#2A1610] border border-african-copper/50 px-8 py-4 rounded-full flex items-center justify-center gap-3 text-african-ivory font-sans uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform duration-300">
               <ShoppingBag size={18} className="text-african-copper" />

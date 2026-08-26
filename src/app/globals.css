@@ -52,6 +52,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+section {
+  scroll-margin-top: 5rem;
 }
 
 body {

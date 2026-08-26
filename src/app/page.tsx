@@ -10,6 +10,7 @@ import Uniforme from "@/components/Uniforme";
 import Cadeaux from "@/components/Cadeaux";
 import Localisation from "@/components/Localisation";
 import AfricanDivider from "@/components/AfricanDivider";
+import RoyalNavbar from "@/components/RoyalNavbar";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -20,6 +21,8 @@ export default function Home() {
 
       {!showSplash && (
         <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
+          <RoyalNavbar />
+
           {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
           <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
 

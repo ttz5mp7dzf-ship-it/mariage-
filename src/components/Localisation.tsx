@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react";
 
 export default function Localisation() {
   return (
-    <section className="py-32 px-4 relative flex justify-center items-center bg-transparent">
+    <section id="localisation" className="py-32 px-4 relative flex justify-center items-center bg-transparent scroll-mt-20">
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Le Lieu</h2>
