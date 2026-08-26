@@ -1,209 +1,172 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { User, Phone, Users, UtensilsCrossed } from "lucide-react";
-import confetti from "canvas-confetti";
-import Image from "next/image";
-import QRCode from "qrcode";
-import * as htmlToImage from "html-to-image";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { UtensilsCrossed, Users } from "lucide-react";
 
-const plats = [
-  "Sauce Kôpê", "Sauce Foufou", "Kplé", "Soupe de pâte de bœuf", 
-  "Tchep blanc", "Sauce tomate", "Poulet braisé", "Poisson braisé"
-];
+type FormData = {
+  name: string;
+  phone: string;
+  present: string;
+  groupSize: number;
+  mainDish: string;
+  sideDish: string;
+  giftCategory: string;
+  giftSubCategory: string;
+  giftCustom: string;
+};
 
-const accompagnements = [
-  "Alloco", "Attiéké blanc", "Attiéké rouge", "Riz blanc", 
-  "Placali", "Foufou", "Foutou banane", "Pommes sautées", "Abolo"
-];
+const plats = ["Médaillons de bœuf au poivre", "Filet de bar rôti, sauce agrumes", "Risotto aux champignons sauvages"];
+const accompagnements = ["Gratin dauphinois revisité", "Légumes de saison glacés", "Mousseline de patates douces"];
+
+const giftCategories: Record<string, string[]> = {
+  "Mobilier": ["canapé", "fauteuil", "table à manger", "chaises", "table basse", "meuble TV", "buffet", "commode", "armoire", "lit", "tête de lit", "table de chevet", "bureau", "bibliothèque", "meuble de rangement", "meuble de cuisine", "meuble de salle de bain", "dressing", "miroir", "console", "pouf", "chaise de bureau", "mobilier extérieur", "salon de jardin", "Autre mobilier"],
+  "Électroménager": ["réfrigérateur", "congélateur", "cuisinière", "four", "micro-ondes", "lave-vaisselle", "blender", "mixeur", "robot de cuisine", "machine à café", "bouilloire", "grille-pain", "friteuse", "air fryer", "extracteur de jus", "appareil à raclette", "machine à laver", "sèche-linge", "aspirateur", "fer à repasser", "centrale vapeur", "ventilateur", "climatiseur", "purificateur d’air", "chauffe-eau", "Autre électroménager"],
+  "Électronique & High-Tech": ["télévision", "vidéoprojecteur", "ordinateur portable", "tablette", "smartphone", "enceinte Bluetooth", "système audio", "home cinéma", "casque audio", "écouteurs", "montre connectée", "appareil photo", "caméra", "console de jeux", "accessoires informatiques", "imprimante", "disque dur", "Autre électronique"],
+  "Expérience": ["voyage", "week-end", "séjour romantique", "dîner gastronomique", "dîner romantique", "spa", "massage", "escapade", "activité culturelle", "activité touristique", "expérience insolite", "séance photo", "activité détente", "Autre expérience"],
+  "Don en numéraire": []
+};
 
 export default function RsvpMenu() {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const present = watch("present");
+  const [claimedGifts, setClaimedGifts] = useState<string[]>([]);
   
-  const [rsvpData, setRsvpData] = useState<any>(null);
-  const [qrSrc, setQrSrc] = useState<string>("");
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const present = watch("present");
+  const giftCategory = watch("giftCategory");
+  const giftSubCategory = watch("giftSubCategory");
 
-  const onSubmit = async (data: any) => {
+  useEffect(() => {
+    fetch("/api/gifts")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setClaimedGifts(data.claimedGifts);
+        }
+      })
+      .catch(err => console.error("Error fetching gifts:", err));
+  }, []);
+
+  const onSubmit = async (data: FormData) => {
     setStatus("loading");
+    
+    // Format the final gift string
+    let finalGift = null;
+    if (data.present === "oui" && data.giftCategory) {
+      if (data.giftCategory === "Don en numéraire") {
+        finalGift = "Don en numéraire";
+      } else if (data.giftSubCategory?.startsWith("Autre")) {
+        finalGift = `${data.giftCategory} - ${data.giftCustom}`;
+      } else {
+        finalGift = `${data.giftCategory} - ${data.giftSubCategory}`;
+      }
+    }
+
     try {
       const response = await fetch("/api/rsvp", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          gift: finalGift
+        }),
       });
+      
       if (response.ok) {
-        const json = await response.json();
-        const rsvp = json.rsvp;
-        setRsvpData(rsvp);
-        
-        // Generate QR code pointing to the guest profile page
-        const guestUrl = `${window.location.origin}/guest/${rsvp.id}`;
-        const qr = await QRCode.toDataURL(guestUrl, { color: { dark: '#0F1C3F', light: '#FFFFFF' }, margin: 1 });
-        setQrSrc(qr);
-
         setStatus("success");
-        // Confetti floral
-        confetti({ particleCount: 200, spread: 150, origin: { y: 0.6 }, colors: ['#7A0A15', '#C5A059', '#234226', '#FFFDF9'] });
       } else {
         setStatus("error");
       }
-    } catch (err) { setStatus("error"); }
-  };
-
-  const handleDownload = async () => {
-    if (!cardRef.current) return;
-    setIsDownloading(true);
-    try {
-      const dataUrl = await htmlToImage.toPng(cardRef.current, { quality: 1, pixelRatio: 3 });
-      const link = document.createElement("a");
-      link.download = `Invitation-Royale-${rsvpData.name.replace(/\s+/g, '-')}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error("Failed to generate image", err);
-    } finally {
-      setIsDownloading(false);
+    } catch (error) {
+      setStatus("error");
     }
   };
 
-  useEffect(() => {
-    if (status === "success" && rsvpData) {
-      document.getElementById("rsvp")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [status, rsvpData]);
-
-  if (status === "success" && rsvpData) {
+  if (status === "success") {
     return (
-      <section id="rsvp" className="py-20 px-4 text-center flex flex-col justify-center items-center min-h-screen relative overflow-hidden bg-transparent">
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8 }} className="z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
-          
-          <h2 className="text-4xl md:text-6xl font-heading text-[#FFFDF9] mb-4 drop-shadow-md">Bienvenue à la Cour</h2>
-          <p className="text-xl md:text-2xl font-sans font-light text-[#C5A059] mb-12">Votre invitation personnelle a été générée avec succès.</p>
-
-          {/* LA CARTE D'INVITATION (DESIGN INSPIRÉ DE L'IMAGE) */}
-          <div className="w-full max-w-[500px] bg-white rounded-md shadow-2xl p-2 relative overflow-hidden border-2 border-[#C5A059]">
-            <div 
-              ref={cardRef} 
-              className="w-full aspect-[4/5] bg-gradient-to-br from-[#f8f5f0] to-[#e4dbc8] relative overflow-hidden"
-              style={{ padding: '20px' }}
+      <section id="rsvp" className="py-32 px-4 bg-[#1A0B08] min-h-[80vh] flex items-center justify-center relative overflow-hidden">
+        {/* Animated Royal Seal Confirmation */}
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }} 
+          animate={{ scale: 1, opacity: 1 }} 
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center z-10 relative"
+        >
+          <div className="relative w-48 h-48 mx-auto mb-10 flex items-center justify-center">
+            <motion.div 
+              animate={{ rotate: 360 }} 
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 border-[6px] border-dashed border-african-gold rounded-full opacity-60"
+            ></motion.div>
+            <motion.div 
+              initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
+              animate={{ rotate: 0, scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
+              className="absolute inset-2 bg-gradient-to-br from-african-terra to-african-bronze rounded-full shadow-[0_0_50px_rgba(192,74,42,0.6)] flex items-center justify-center"
             >
-              {/* Filigrane / Effet lumineux au centre */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_#ffffff_0%,_transparent_70%)] opacity-80 pointer-events-none z-0"></div>
-
-              <div className="relative z-10 h-full flex flex-col items-center justify-between text-[#2c343b]">
-                
-                {/* Haut : Solemnization */}
-                <div className="text-center w-full mt-4">
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] font-sans text-gray-500 mb-4">La Fête dans la Cour Royale</p>
-                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-full px-6 py-2 inline-block shadow-sm">
-                    <p className="font-heading text-xl md:text-3xl text-gray-800">Save the Date</p>
-                  </div>
-                </div>
-
-                {/* Milieu : Photo + Date block */}
-                <div className="relative w-full h-[40%] flex justify-center items-center mt-6">
-                  {/* Photo centrée détourée ou fondue */}
-                  <div className="absolute inset-0 flex justify-center items-center">
-                    <div className="w-48 h-48 md:w-56 md:h-56 relative rounded-full overflow-hidden shadow-2xl border-4 border-white">
-                      <Image src="/couple.jpg" alt="Couple" fill className="object-cover object-top" />
-                    </div>
-                  </div>
-                  
-                  {/* Date Block sur le côté */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 p-4 rounded-xl shadow-lg border border-gray-100 flex flex-col items-center">
-                    <span className="text-4xl md:text-5xl font-heading font-bold text-[#0F1C3F] leading-none">10</span>
-                    <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-gray-600 border-y border-gray-300 py-1 my-1 w-full text-center">OCTOBRE</span>
-                    <span className="bg-[#0F1C3F] text-white text-[10px] font-bold px-2 py-1 rounded w-full text-center">12:00</span>
-                  </div>
-
-                  {/* Tampon RSVP sur l'autre côté */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-16">
-                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#C5A059] flex items-center justify-center p-1 opacity-70">
-                      <div className="w-full h-full rounded-full bg-[#C5A059]/20 flex flex-col items-center justify-center text-center leading-none">
-                        <span className="text-[7px] uppercase tracking-wider font-bold text-[#C5A059]">Accès</span>
-                        <span className="text-[8px] font-serif italic text-gray-800">VIP</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bas : Noms et invité */}
-                <div className="text-center w-full z-20 mt-12">
-                  <h1 className="text-5xl md:text-7xl font-heading font-bold text-[#0F1C3F] drop-shadow-lg leading-none" style={{ textShadow: '2px 2px 4px rgba(255,255,255,0.8)' }}>
-                    Élisée <br/><span className="text-4xl md:text-6xl text-[#C5A059]">&</span> Lydia
-                  </h1>
-                </div>
-
-                {/* Bloc invité + QR */}
-                <div className="w-full bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-[#C5A059]/30 mt-4 flex justify-between items-center text-left">
-                  <div className="flex-1 pr-4">
-                    <p className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#C5A059] mb-1">Vous êtes invité(e)</p>
-                    <p className="text-lg md:text-xl font-heading font-bold text-[#0F1C3F] truncate">{rsvpData.name}</p>
-                    <p className="text-xs font-sans text-gray-500 mt-1">{rsvpData.groupSize} personne(s) • Menu: {rsvpData.mainDish}</p>
-                    <p className="text-[10px] font-sans italic text-gray-400 mt-2 mt-2 leading-tight">
-                      "Que notre joie soit parfaite en votre présence."
-                    </p>
-                  </div>
-                  {qrSrc && (
-                    <div className="w-20 h-20 bg-white p-1 rounded-lg border border-gray-200 shadow-inner flex-shrink-0">
-                      <img src={qrSrc} alt="QR Code" className="w-full h-full" />
-                    </div>
-                  )}
-                </div>
-
-              </div>
-            </div>
+              {/* Motif géométrique au centre du sceau */}
+              <svg width="60" height="60" viewBox="0 0 60 60" className="text-african-gold">
+                <path fill="currentColor" d="M30 0L60 30L30 60L0 30L30 0ZM30 10L10 30L30 50L50 30L30 10Z" />
+                <circle cx="30" cy="30" r="8" fill="currentColor" />
+              </svg>
+            </motion.div>
           </div>
-
-          <button 
-            onClick={handleDownload}
-            disabled={isDownloading}
-            className="mt-12 bg-gradient-to-r from-[#C5A059] to-[#8E6F33] text-white px-12 py-5 rounded-full font-sans text-sm uppercase tracking-[0.2em] font-bold shadow-[0_10px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_15px_30px_rgba(197,160,89,0.6)] hover:-translate-y-1 transition-all duration-300 disabled:opacity-50"
+          <motion.h3 
+            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}
+            className="text-4xl md:text-5xl font-heading text-african-gold mb-4"
           >
-            {isDownloading ? "Génération en cours..." : "Télécharger mon invitation"}
-          </button>
+            VOTRE PRÉSENCE EST INSCRITE
+          </motion.h3>
+          <motion.p 
+            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1 }}
+            className="text-african-ivory/80 text-lg font-sans max-w-lg mx-auto"
+          >
+            Votre attention et votre générosité font déjà partie de notre célébration.
+          </motion.p>
         </motion.div>
       </section>
     );
   }
 
   return (
-    <section id="rsvp" className="py-32 px-4 relative bg-transparent">
-      <div className="max-w-6xl mx-auto relative z-10">
+    <section id="rsvp" className="py-32 px-4 relative overflow-hidden bg-[#2A1610]">
+      {/* Texture de fond */}
+      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%23CD7F32\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/svg%3E')" }}></div>
+      
+      <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-24">
-          <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-[#C5A059] mb-4">Registre Royal</h2>
-          <h3 className="text-5xl md:text-7xl font-heading text-[#FFFDF9] mb-6">Confirmez votre Présence</h3>
+          <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6">Registre Royal</h2>
+          <h3 className="text-5xl md:text-7xl font-heading text-african-ivory">Confirmez votre venue</h3>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="glass-premium bg-[#0F1C3F]/40 p-8 md:p-20 rounded-[2rem] relative shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* NAME */}
             <div className="relative group">
-              <label className="block text-[#FFFDF9] text-xs font-bold mb-3 uppercase tracking-widest">Nom Complet</label>
-              <div className="flex items-center border-b border-[#C5A059]/50 group-focus-within:border-[#C5A059] transition-colors">
-                <User className="text-[#C5A059] mr-4" size={20} />
-                <input {...register("name", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-[#FFFDF9] placeholder-[#FFFDF9]/30" placeholder="Entrez votre nom" />
+              <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest">Nom et Prénom</label>
+              <div className="relative border-b border-african-gold/50 group-focus-within:border-african-gold transition-colors">
+                <input type="text" {...register("name", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold placeholder-african-gold/30" placeholder="Son Excellence..." />
               </div>
             </div>
 
+            {/* PHONE */}
             <div className="relative group">
-              <label className="block text-[#FFFDF9] text-xs font-bold mb-3 uppercase tracking-widest">Téléphone</label>
-              <div className="flex items-center border-b border-[#C5A059]/50 group-focus-within:border-[#C5A059] transition-colors">
-                <Phone className="text-[#C5A059] mr-4" size={20} />
-                <input {...register("phone", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-[#FFFDF9] placeholder-[#FFFDF9]/30" placeholder="07 XX XX XX XX" />
+              <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest">Numéro de Téléphone</label>
+              <div className="relative border-b border-african-gold/50 group-focus-within:border-african-gold transition-colors">
+                <input type="tel" {...register("phone", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold placeholder-african-gold/30" placeholder="+225 00 00 00 00 00" />
               </div>
             </div>
 
+            {/* PRESENCE */}
             <div className="relative group md:col-span-2 max-w-md mx-auto w-full">
-              <label className="block text-[#FFFDF9] text-xs font-bold mb-3 uppercase tracking-widest text-center">Serez-vous présent ?</label>
-              <select {...register("present", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-[#C5A059] text-center border-b border-[#C5A059]/50">
-                <option value="" className="bg-[#0F1C3F]">Sélectionnez...</option>
-                <option value="oui" className="bg-[#0F1C3F]">Oui, c'est un honneur</option>
-                <option value="non" className="bg-[#0F1C3F]">Non, avec regret</option>
+              <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Serez-vous présent ?</label>
+              <select {...register("present", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold text-center border-b border-african-gold/50">
+                <option value="" className="bg-[#1A0B08]">Sélectionnez...</option>
+                <option value="oui" className="bg-[#1A0B08]">Oui, je serai présent</option>
+                <option value="non" className="bg-[#1A0B08]">Non, je ne pourrai malheureusement pas être présent</option>
+                <option value="peut-etre" className="bg-[#1A0B08]">Je ne suis pas encore certain(e)</option>
               </select>
             </div>
           </div>
@@ -213,64 +176,109 @@ export default function RsvpMenu() {
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-20 overflow-hidden">
                 
                 <div className="relative group max-w-md mx-auto w-full mb-20">
-                  <label className="block text-[#FFFDF9] text-xs font-bold mb-3 uppercase tracking-widest text-center">Nombre d'invités</label>
-                  <div className="flex items-center justify-center border-b border-[#C5A059]/50 group-focus-within:border-[#C5A059] transition-colors">
-                    <Users className="text-[#C5A059] mr-4" size={20} />
-                    <input type="number" min="1" max="5" {...register("groupSize", { required: true, valueAsNumber: true })} className="w-32 text-center py-4 bg-transparent focus:outline-none text-xl font-sans text-[#FFFDF9]" defaultValue={1} />
+                  <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Nombre d'invités</label>
+                  <div className="flex items-center justify-center border-b border-african-gold/50 group-focus-within:border-african-gold transition-colors">
+                    <Users className="text-african-gold mr-4" size={20} />
+                    <input type="number" min="1" max="5" {...register("groupSize", { required: true, valueAsNumber: true })} className="w-32 text-center py-4 bg-transparent focus:outline-none text-xl font-sans text-african-ivory" defaultValue={1} />
                   </div>
                 </div>
 
                 <div className="text-center mb-16">
-                  <UtensilsCrossed size={40} className="mx-auto text-[#C5A059] mb-6" />
-                  <h4 className="text-4xl md:text-5xl font-heading text-[#FFFDF9] mb-2">Menu Gastronomique</h4>
+                  <UtensilsCrossed size={40} className="mx-auto text-african-gold mb-6" />
+                  <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Menu Gastronomique</h4>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                  <div className="bg-[#0F1C3F]/80 p-8 rounded-2xl border border-[#C5A059]/20 shadow-xl backdrop-blur-md">
-                    <h5 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-[#C5A059] mb-8 text-center border-b border-[#C5A059]/30 pb-4">Plats Principaux</h5>
+                  <div className="bg-[#3E2723]/80 p-8 rounded-sm border border-african-gold/20 shadow-xl backdrop-blur-md relative">
+                    {/* Coins décoratifs */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-african-gold m-2"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-african-gold m-2"></div>
+                    
+                    <h5 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-african-gold mb-8 text-center border-b border-african-gold/30 pb-4">Plats Principaux</h5>
                     <div className="space-y-3">
                       {plats.map((plat) => (
-                        <label key={plat} className="flex items-center space-x-4 cursor-pointer group hover:bg-[#C5A059]/10 p-4 rounded-xl transition-all duration-300">
-                          <div className="w-5 h-5 rounded-full border-2 border-[#C5A059] flex items-center justify-center">
+                        <label key={plat} className="flex items-center space-x-4 cursor-pointer group hover:bg-[#1A0B08]/40 p-4 rounded-sm transition-all duration-300">
+                          <div className="w-5 h-5 rounded-full border-2 border-african-gold flex items-center justify-center">
                             <input type="radio" value={plat} {...register("mainDish", { required: true })} className="opacity-0 absolute w-0 h-0 peer" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#C5A059] opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-african-gold opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                           </div>
-                          <span className="text-lg font-sans text-[#FFFDF9] group-hover:text-[#C5A059] transition-colors">{plat}</span>
+                          <span className="text-lg font-sans text-african-ivory group-hover:text-african-gold transition-colors">{plat}</span>
                         </label>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-[#0F1C3F]/80 p-8 rounded-2xl border border-[#C5A059]/20 shadow-xl backdrop-blur-md">
-                    <h5 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-[#C5A059] mb-8 text-center border-b border-[#C5A059]/30 pb-4">Accompagnements</h5>
+                  <div className="bg-[#3E2723]/80 p-8 rounded-sm border border-african-gold/20 shadow-xl backdrop-blur-md relative">
+                    {/* Coins décoratifs */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-african-gold m-2"></div>
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-african-gold m-2"></div>
+                    
+                    <h5 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-african-gold mb-8 text-center border-b border-african-gold/30 pb-4">Accompagnements</h5>
                     <div className="space-y-3">
                       {accompagnements.map((acc) => (
-                        <label key={acc} className="flex items-center space-x-4 cursor-pointer group hover:bg-[#C5A059]/10 p-4 rounded-xl transition-all duration-300">
-                          <div className="w-5 h-5 rounded-full border-2 border-[#C5A059] flex items-center justify-center">
+                        <label key={acc} className="flex items-center space-x-4 cursor-pointer group hover:bg-[#1A0B08]/40 p-4 rounded-sm transition-all duration-300">
+                          <div className="w-5 h-5 rounded-full border-2 border-african-gold flex items-center justify-center">
                             <input type="radio" value={acc} {...register("sideDish", { required: true })} className="opacity-0 absolute w-0 h-0 peer" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#C5A059] opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-african-gold opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                           </div>
-                          <span className="text-lg font-sans text-[#FFFDF9] group-hover:text-[#C5A059] transition-colors">{acc}</span>
+                          <span className="text-lg font-sans text-african-ivory group-hover:text-african-gold transition-colors">{acc}</span>
                         </label>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-16 text-center">
+                {/* SECTION CADEAUX INTELLIGENTE */}
+                <div className="mt-20 text-center">
                   <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Votre Offrande</h4>
                   <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-gold mb-10">Participez à notre joie</p>
                   
-                  <div className="max-w-2xl mx-auto bg-[#3E2723]/80 p-8 rounded-2xl border border-african-gold/20 shadow-xl backdrop-blur-md">
-                    <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Quelle sera la nature de votre cadeau ?</label>
-                    <select {...register("gift")} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold text-center border-b border-african-gold/30">
-                      <option value="" className="bg-[#2A1610]">Je choisis mon type de cadeau...</option>
-                      <option value="Maison & mobilier" className="bg-[#2A1610]">Maison & mobilier</option>
-                      <option value="Électronique & électroménager" className="bg-[#2A1610]">Électronique & électroménager</option>
-                      <option value="Don en numéraire" className="bg-[#2A1610]">Don en numéraire</option>
-                      <option value="Expériences" className="bg-[#2A1610]">Expériences</option>
-                      <option value="Surprise" className="bg-[#2A1610]">C'est une surprise !</option>
+                  <div className="max-w-2xl mx-auto bg-[#3E2723]/80 p-8 rounded-sm border border-african-gold/20 shadow-xl backdrop-blur-md relative">
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-african-gold m-4 opacity-50"></div>
+                    
+                    <p className="text-[10px] text-african-ivory/60 uppercase tracking-widest mb-6 border border-african-bronze p-2 bg-[#1A0B08]/50">
+                      Pour éviter les doublons de cadeaux, veuillez sélectionner dans votre inscription le cadeau que vous comptez offrir. Les cadeaux déjà réservés sont grisés.
+                    </p>
+
+                    <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center mt-8">Quelle est la nature du cadeau que vous souhaitez offrir ?</label>
+                    <select {...register("giftCategory")} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold text-center border-b border-african-gold/30">
+                      <option value="" className="bg-[#1A0B08]">Sélectionnez une catégorie...</option>
+                      {Object.keys(giftCategories).map(cat => (
+                        <option key={cat} value={cat} className="bg-[#1A0B08]">{cat}</option>
+                      ))}
                     </select>
+
+                    {/* SOUS CATÉGORIE */}
+                    <AnimatePresence>
+                      {giftCategory && giftCategories[giftCategory]?.length > 0 && (
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-8">
+                          <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Précisez votre choix</label>
+                          <select {...register("giftSubCategory")} className="w-full py-4 bg-transparent focus:outline-none text-lg font-sans text-african-ivory text-center border-b border-african-bronze/50">
+                            <option value="" className="bg-[#1A0B08]">Sélectionnez un élément...</option>
+                            {giftCategories[giftCategory].map(sub => {
+                              const uniqueKey = `${giftCategory} - ${sub}`;
+                              const isClaimed = claimedGifts.includes(uniqueKey);
+                              return (
+                                <option key={sub} value={sub} disabled={isClaimed} className={`bg-[#1A0B08] ${isClaimed ? "text-gray-500 line-through" : ""}`}>
+                                  {sub} {isClaimed ? "(Déjà réservé)" : ""}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* CHAMP LIBRE POUR "AUTRE" */}
+                    <AnimatePresence>
+                      {giftSubCategory?.startsWith("Autre") && (
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-8">
+                          <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">Lequel ?</label>
+                          <input type="text" {...register("giftCustom", { required: true })} className="w-full py-4 bg-transparent focus:outline-none text-xl font-sans text-african-gold text-center border-b border-african-bronze/50 placeholder-african-gold/30" placeholder="Ex: Machine à pain..." />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                   </div>
                 </div>
               </motion.div>
@@ -296,6 +304,7 @@ export default function RsvpMenu() {
             </button>
             <p className="mt-8 font-sans text-xs uppercase tracking-widest text-african-gold/80">Apposer votre sceau</p>
           </div>
+          {status === "error" && <p className="text-red-500 text-center mt-4 font-sans">Une erreur est survenue lors de l'enregistrement de votre sceau.</p>}
         </form>
       </div>
     </section>
