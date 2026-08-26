@@ -12,9 +12,18 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
 
   useEffect(() => {
     if (isEntered) {
-      setDoorsOpen(true);
-      const timer = setTimeout(() => setDoorOverlayVisible(false), 1400);
-      return () => clearTimeout(timer);
+      const openTimer = setTimeout(() => {
+        setDoorsOpen(true);
+      }, 2000);
+
+      const hideOverlayTimer = setTimeout(() => {
+        setDoorOverlayVisible(false);
+      }, 3600);
+
+      return () => {
+        clearTimeout(openTimer);
+        clearTimeout(hideOverlayTimer);
+      };
     }
   }, [isEntered]);
 
