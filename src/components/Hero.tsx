@@ -39,22 +39,28 @@ export default function Hero() {
           initial={{ x: 0 }}
           animate={{ x: doorsOpen ? "-100%" : 0 }}
           transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#3E2723] border-r-4 border-african-gold relative overflow-hidden shadow-2xl"
+          className="w-1/2 h-full bg-[#2A1610] border-r-[6px] border-african-gold relative overflow-hidden shadow-[20px_0_50px_rgba(0,0,0,0.8)] z-10"
         >
-          {/* Texture bois / motifs sur la porte gauche */}
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cpath d=\\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z\\' fill=\\'%23CD7F32\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'/%3E%3C/svg%3E')" }}></div>
-          <div className="absolute top-1/2 right-4 -translate-y-1/2 w-8 h-32 bg-african-gold/80 rounded-l-full shadow-lg border border-african-copper/50"></div>
+          {/* Vrai Motif Africain */}
+          <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0B08]/80"></div>
+          
+          {/* Poignée de porte */}
+          <div className="absolute top-1/2 right-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
         </motion.div>
         
         <motion.div 
           initial={{ x: 0 }}
           animate={{ x: doorsOpen ? "100%" : 0 }}
           transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#3E2723] border-l-4 border-african-gold relative overflow-hidden shadow-2xl"
+          className="w-1/2 h-full bg-[#2A1610] border-l-[6px] border-african-gold relative overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.8)] z-10"
         >
-          {/* Texture bois / motifs sur la porte droite */}
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cpath d=\\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z\\' fill=\\'%23CD7F32\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'/%3E%3C/svg%3E')" }}></div>
-          <div className="absolute top-1/2 left-4 -translate-y-1/2 w-8 h-32 bg-african-gold/80 rounded-r-full shadow-lg border border-african-copper/50"></div>
+          {/* Vrai Motif Africain (mirroir pour la symétrie) */}
+          <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1A0B08]/80"></div>
+
+          {/* Poignée de porte */}
+          <div className="absolute top-1/2 left-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
         </motion.div>
       </div>
 
