@@ -2,17 +2,41 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { MessageCircle, Minus, Plus, ShoppingBag } from "lucide-react";
+import { MessageCircle, ShoppingBag, CheckCircle } from "lucide-react";
 import Image from "next/image";
+
+const PAGNE_FORMULAS = [
+  {
+    id: "complet",
+    label: "COMPLET",
+    sublabel: "3 Pagnes",
+    description: "La tenue complète officielle de la cérémonie royale.",
+    accent: "#D4AF37",
+  },
+  {
+    id: "deux",
+    label: "DEMI",
+    sublabel: "2 Pagnes",
+    description: "Une présence cérémonielle élégante.",
+    accent: "#CD7F32",
+  },
+  {
+    id: "un",
+    label: "ESSENTIEL",
+    sublabel: "1 Pagne",
+    description: "L'ornement de base, le symbole de l'union.",
+    accent: "#B87333",
+  },
+];
 
 export default function Uniforme() {
   const [quantity, setQuantity] = useState(1);
-  const [pagneType, setPagneType] = useState("Complet (3 pagnes)");
+  const [selectedFormula, setSelectedFormula] = useState(PAGNE_FORMULAS[0]);
 
   const handleOrder = () => {
-    const phoneNumber = "2250778270621"; // Indicatif +225 (Côte d'Ivoire) + numéro
+    const phoneNumber = "2250778270621";
     const message = encodeURIComponent(
-      `Bonjour Leticia 👑,\n\nJe suis un invité au mariage d'Élisée & Lydia.\nJ'aimerais passer commande pour le pagne officiel de la cérémonie.\n\n📦 *Commande* : ${quantity}x ${pagneType}\n\nMerci de m'indiquer les modalités de paiement et de récupération. 🙏`
+      `Bonjour Leticia 👑,\n\nJe suis un invité au mariage d'Élisée & Lydia.\nJ'aimerais passer commande pour le pagne officiel de la cérémonie.\n\n📦 *Commande* : ${quantity}x ${selectedFormula.label} — ${selectedFormula.sublabel}\n\nMerci de m'indiquer les modalités de paiement et de récupération. 🙏`
     );
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
@@ -20,23 +44,17 @@ export default function Uniforme() {
   return (
     <section id="pagne" className="py-32 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden perspective-[1000px] bg-transparent">
       
-      {/* Simulation de tissu de pagne flottant (Couleurs chaudes africaines) */}
-      <motion.div 
-        animate={{ 
-          rotateX: [0, 5, 0, -5, 0], 
-          rotateY: [0, -3, 0, 3, 0],
-          scale: [1, 1.05, 1] 
-        }}
+      {/* Tissu de pagne ondulant en fond */}
+      <motion.div
+        animate={{ rotateX: [0, 5, 0, -5, 0], rotateY: [0, -3, 0, 3, 0], scale: [1, 1.05, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute inset-0 opacity-20 transform-gpu"
-        style={{ 
+        className="absolute inset-0 opacity-20 transform-gpu animate-fabric-wave"
+        style={{
           backgroundImage: "repeating-linear-gradient(45deg, var(--color-african-terra) 0px, var(--color-african-terra) 15px, var(--color-african-gold) 15px, var(--color-african-gold) 30px, var(--color-african-bronze) 30px, var(--color-african-bronze) 45px, var(--color-african-copper) 45px, var(--color-african-copper) 60px, var(--color-african-brown) 60px, var(--color-african-brown) 75px)",
           backgroundSize: "200% 200%",
         }}
-      ></motion.div>
-
-      {/* Halo de lumière */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#2A1610_100%)] opacity-90"></div>
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#2A1610_100%)] opacity-90" />
 
       <div className="max-w-5xl mx-auto w-full relative z-10">
         <div className="text-center mb-12">
@@ -47,34 +65,92 @@ export default function Uniforme() {
           </p>
         </div>
 
-        {/* Le Mini-Shop (Design Bois/Cuivre) */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
+        {/* ===== 3 FORMULES DE PAGNES ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {PAGNE_FORMULAS.map((formula, idx) => {
+            const isSelected = selectedFormula.id === formula.id;
+            return (
+              <motion.button
+                key={formula.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15, duration: 0.7 }}
+                onClick={() => setSelectedFormula(formula)}
+                className={`relative p-8 text-center border-2 transition-all duration-500 group overflow-hidden ${
+                  isSelected
+                    ? "border-african-gold bg-[#3E2723]/90 shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+                    : "border-african-bronze/30 bg-[#1A0B08]/80 hover:border-african-bronze"
+                }`}
+              >
+                {/* Motif de fond du bouton */}
+                <div
+                  className={`absolute inset-0 opacity-10 transition-opacity duration-500 ${isSelected ? "opacity-20" : ""}`}
+                  style={{
+                    backgroundImage: "url('data:image/svg+xml,%3Csvg width%3D%2240%22 height%3D%2240%22 viewBox%3D%220 0 40 40%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath d%3D%22M20 0L40 20L20 40L0 20L20 0ZM20 8L8 20L20 32L32 20L20 8Z%22 fill%3D%22%23CD7F32%22%2F%3E%3C%2Fsvg%3E')",
+                    backgroundSize: "40px 40px",
+                  }}
+                />
+
+                {/* Ornements aux coins si sélectionné */}
+                {isSelected && (
+                  <>
+                    <div className="absolute top-1 left-1 w-4 h-4 border-t-2 border-l-2 border-african-gold" />
+                    <div className="absolute top-1 right-1 w-4 h-4 border-t-2 border-r-2 border-african-gold" />
+                    <div className="absolute bottom-1 left-1 w-4 h-4 border-b-2 border-l-2 border-african-gold" />
+                    <div className="absolute bottom-1 right-1 w-4 h-4 border-b-2 border-r-2 border-african-gold" />
+                    <CheckCircle className="absolute top-3 right-3 text-african-gold" size={16} />
+                  </>
+                )}
+
+                <div className="relative z-10">
+                  {/* Numéro de pagnes (gros) */}
+                  <div
+                    className="text-6xl md:text-7xl font-heading mb-1 transition-colors duration-300"
+                    style={{ color: isSelected ? formula.accent : "#B87333" }}
+                  >
+                    {formula.sublabel.split(" ")[0]}
+                  </div>
+
+                  <div className="text-[10px] font-sans uppercase tracking-[0.4em] text-african-ivory/60 mb-3">
+                    {formula.sublabel.split(" ").slice(1).join(" ")}
+                  </div>
+
+                  <div className="h-px bg-african-gold/30 my-3" />
+
+                  <h4
+                    className="text-xl font-heading mb-2 transition-colors duration-300"
+                    style={{ color: isSelected ? formula.accent : "#FDFBF7" }}
+                  >
+                    {formula.label}
+                  </h4>
+                  <p className="text-xs font-sans text-african-ivory/60 leading-relaxed">
+                    {formula.description}
+                  </p>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Bloc Image + Commande */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="bg-[#3E2723]/80 backdrop-blur-2xl border border-african-gold/50 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row relative"
+          className="bg-[#3E2723]/80 backdrop-blur-2xl border border-african-gold/50 shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row relative"
         >
-          {/* Gravure d'angle */}
-          <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-african-gold opacity-50 m-4 rounded-tr-xl"></div>
-          <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-african-gold opacity-50 m-4 rounded-bl-xl"></div>
+          <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-african-gold opacity-50 m-4" />
+          <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-african-gold opacity-50 m-4" />
 
           {/* Image du Pagne */}
           <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-[400px]">
-            {/* Lueur arrière */}
-            <div className="absolute inset-0 bg-gradient-to-br from-african-terra/40 to-african-bronze/40 z-0"></div>
-            
-            <Image 
-              src="/pagne.jpg" 
-              alt="Pagne Royal" 
-              fill 
-              className="object-cover object-center opacity-90 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-[#2A1610] via-transparent to-transparent z-10 md:bg-gradient-to-r md:from-transparent md:to-[#3E2723]/90"></div>
-            
+            <div className="absolute inset-0 bg-gradient-to-br from-african-terra/40 to-african-bronze/40 z-0" />
+            <Image src="/pagne.jpg" alt="Pagne Royal" fill className="object-cover object-center opacity-90 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#2A1610] via-transparent to-transparent z-10 md:bg-gradient-to-r md:from-transparent md:to-[#3E2723]/90" />
             <div className="absolute bottom-6 left-6 z-20">
-              <span className="bg-african-gold text-[#2A1610] text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-sm shadow-lg border border-african-copper">
+              <span className="bg-african-gold text-[#2A1610] text-xs font-bold uppercase tracking-widest px-4 py-1 shadow-lg border border-african-copper">
                 Édition Limitée
               </span>
             </div>
@@ -82,51 +158,27 @@ export default function Uniforme() {
 
           {/* Interface de Commande */}
           <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative z-20">
-            
             <div className="flex items-center gap-3 mb-6 text-african-gold">
               <ShoppingBag size={24} />
               <h4 className="text-2xl font-heading tracking-wide">Commander votre tissu</h4>
             </div>
 
-            <div className="space-y-8 mb-10">
-              {/* Choix du format */}
-              <div>
-                <label className="block text-african-ivory/60 text-xs font-sans uppercase tracking-widest mb-3">Format désiré</label>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {["Complet (3 pagnes)", "Demi (1.5 pagne)"].map((type) => (
-                    <button 
-                      key={type}
-                      onClick={() => setPagneType(type)}
-                      className={`flex-1 py-3 px-4 rounded-sm border text-sm font-sans transition-all ${
-                        pagneType === type 
-                        ? "border-african-gold bg-african-gold/10 text-african-gold" 
-                        : "border-african-bronze/30 text-african-ivory/50 hover:border-african-bronze"
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Résumé de la sélection */}
+            <div className="bg-[#1A0B08]/60 border border-african-gold/30 p-4 mb-8">
+              <p className="text-[10px] uppercase tracking-widest text-african-copper mb-1">Votre sélection</p>
+              <p className="text-xl font-heading text-african-ivory">
+                {selectedFormula.label} — <span className="text-african-gold">{selectedFormula.sublabel}</span>
+              </p>
+              <p className="text-xs text-african-ivory/60 mt-1">{selectedFormula.description}</p>
+            </div>
 
-              {/* Quantité */}
-              <div>
-                <label className="block text-african-ivory/60 text-xs font-sans uppercase tracking-widest mb-3">Quantité</label>
-                <div className="flex items-center gap-6 bg-[#1A0B08] w-fit rounded-full border border-african-gold/30 p-1">
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent text-african-gold hover:bg-african-gold/20 transition-colors"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="text-2xl font-heading text-african-ivory min-w-[2rem] text-center">{quantity}</span>
-                  <button 
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent text-african-gold hover:bg-african-gold/20 transition-colors"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
+            {/* Quantité */}
+            <div className="mb-10">
+              <label className="block text-african-ivory/60 text-xs font-sans uppercase tracking-widest mb-3">Quantité</label>
+              <div className="flex items-center gap-6 bg-[#1A0B08] w-fit border border-african-gold/30 p-2">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-african-gold hover:bg-african-gold/20 transition-colors text-2xl font-bold">−</button>
+                <span className="text-2xl font-heading text-african-ivory min-w-[2rem] text-center">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center text-african-gold hover:bg-african-gold/20 transition-colors text-2xl font-bold">+</button>
               </div>
             </div>
 

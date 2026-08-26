@@ -129,5 +129,83 @@ body {
   animation: pulse-slow 8s ease-in-out infinite;
 }
 
+/* ============================
+   ROYAL AFRICAN ANIMATIONS
+   ============================ */
+
+/* Flottement doux pour les ornements */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(1deg); }
+  66% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+/* Rotation très lente pour les sceaux */
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Rotation inverse lente */
+@keyframes rotate-slow-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+/* Pulsation d'un halo doré */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+  50% { opacity: 0.8; box-shadow: 0 0 30px rgba(212,175,55,0.6), 0 0 60px rgba(212,175,55,0.3); }
+}
+
+/* Shimmer / reflet lumineux */
+@keyframes shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(300%) skewX(-15deg); }
+}
+
+/* Ondulation du tissu */
+@keyframes fabric-wave {
+  0%, 100% { transform: skewX(0deg) scaleY(1); }
+  25% { transform: skewX(0.5deg) scaleY(1.005); }
+  75% { transform: skewX(-0.5deg) scaleY(0.995); }
+}
+
+/* Chute des motifs de pagne */
+@keyframes pagne-fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.85; }
+  85% { opacity: 0.6; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+/* Expansion du séparateur de section */
+@keyframes divider-expand {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+/* Apparition de gravure (effet titre) */
+@keyframes engrave-in {
+  0% { opacity: 0; letter-spacing: 0.8em; filter: blur(8px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+/* Losange qui pulse très doucement */
+@keyframes diamond-pulse {
+  0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.6; }
+  50% { transform: rotate(45deg) scale(1.15); opacity: 1; }
+}
+
 /* Scrollbar invisible pour un look full cinéma */
 ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+/* Classes utilitaires d'animation */
+.animate-float-gentle { animation: float-gentle 6s ease-in-out infinite; }
+.animate-rotate-slow { animation: rotate-slow 30s linear infinite; }
+.animate-rotate-slow-reverse { animation: rotate-slow-reverse 25s linear infinite; }
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+.animate-shimmer { animation: shimmer 2.5s ease-in-out infinite; }
+.animate-fabric-wave { animation: fabric-wave 8s ease-in-out infinite; }
+.animate-diamond-pulse { animation: diamond-pulse 4s ease-in-out infinite; }
+.animate-engrave-in { animation: engrave-in 1.5s ease-out forwards; }

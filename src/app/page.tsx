@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Splash from "@/components/Splash";
 import Hero from "@/components/Hero";
 import GalerieRoyale from "@/components/GalerieRoyale";
@@ -10,6 +9,7 @@ import RsvpMenu from "@/components/RsvpMenu";
 import Uniforme from "@/components/Uniforme";
 import Cadeaux from "@/components/Cadeaux";
 import Localisation from "@/components/Localisation";
+import AfricanDivider from "@/components/AfricanDivider";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -17,45 +17,80 @@ export default function Home() {
   return (
     <>
       {showSplash && <Splash onEnter={() => setShowSplash(false)} />}
-      
+
       {!showSplash && (
         <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
-          {/* Texture de fond : Terre/Bois subtil avec effet coucher de soleil */}
+          {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
           <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
-          
-          {/* Poussière lumineuse / Lumière chaude du coucher de soleil */}
+
+          {/* Halos de lumière chaude animés */}
           <div className="fixed inset-0 z-0 pointer-events-none">
-            <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-african-copper/10 blur-[120px] mix-blend-screen" />
-            <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-african-terra/10 blur-[150px] mix-blend-screen" />
-            <div className="absolute bottom-[-20%] left-[20%] w-[70vw] h-[70vw] rounded-full bg-african-gold/10 blur-[130px] mix-blend-screen" />
-            
-            {/* Subtil motif géométrique africain en overlay (SVG pattern) */}
-            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23CD7F32\\' fill-opacity=\\'1\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg\\'%3E')" }} />
+            <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-african-copper/15 blur-[150px] mix-blend-screen animate-pulse-slow" />
+            <div className="absolute top-[20%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-african-terra/12 blur-[180px] mix-blend-screen animate-pulse-slow" style={{ animationDelay: "2s" }} />
+            <div className="absolute bottom-[-20%] left-[10%] w-[80vw] h-[80vw] rounded-full bg-african-gold/8 blur-[160px] mix-blend-screen animate-pulse-slow" style={{ animationDelay: "4s" }} />
+
+            {/* Motif géométrique africain subtil en fond global */}
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage:
+                  "url('data:image/svg+xml,%3Csvg width%3D%2260%22 height%3D%2260%22 viewBox%3D%220 0 60 60%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22%23CD7F32%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M30 0L60 30L30 60L0 30L30 0ZM30 10L10 30L30 50L50 30L30 10Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')",
+                backgroundSize: "60px 60px",
+              }}
+            />
           </div>
 
           <div className="relative z-10 w-full overflow-hidden">
             <Hero />
-            
-            {/* Transition douce entre Hero et la suite */}
-            <div className="w-full h-32 bg-gradient-to-b from-transparent to-[#2A1610]/80"></div>
-            
+
+            <AfricanDivider />
+
             <div className="bg-[#2A1610]/80 backdrop-blur-sm">
               <InvitationOfficielle />
+
+              <AfricanDivider inverted />
+
               <GalerieRoyale />
+
+              <AfricanDivider />
+
               <Cadeaux />
+
+              <AfricanDivider inverted />
+
               <RsvpMenu />
+
+              <AfricanDivider />
+
               <Uniforme />
+
+              <AfricanDivider inverted />
+
               <Localisation />
-              
+
               <footer className="py-24 text-center text-african-ivory relative overflow-hidden">
+                {/* Séparateur ornemental final */}
+                <div className="flex items-center justify-center gap-3 mb-16 px-8">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent to-african-gold/60"></div>
+                  <div className="w-4 h-4 bg-african-gold rotate-45 animate-diamond-pulse"></div>
+                  <div className="w-2 h-2 bg-african-copper rotate-45"></div>
+                  <div className="w-6 h-6 border-2 border-african-gold rotate-45 animate-float-gentle"></div>
+                  <div className="w-2 h-2 bg-african-copper rotate-45"></div>
+                  <div className="w-4 h-4 bg-african-gold rotate-45 animate-diamond-pulse" style={{ animationDelay: "2s" }}></div>
+                  <div className="h-px flex-1 bg-gradient-to-l from-transparent to-african-gold/60"></div>
+                </div>
+
                 <div className="relative z-10 max-w-3xl mx-auto px-4">
-                  <p className="text-2xl md:text-3xl font-sans font-light mb-8 italic">
-                    Merci de traverser ce voyage avec nous.<br/>
+                  <p className="text-2xl md:text-3xl font-heading font-light mb-8 text-african-ivory/90 leading-relaxed">
+                    Merci de traverser ce voyage avec nous.<br />
                     Nous avons hâte de célébrer ce moment précieux à vos côtés.
                   </p>
-                  <div className="text-4xl md:text-6xl font-heading gold-text mt-12">
+                  <div className="text-4xl md:text-6xl font-heading mt-12 text-african-gold drop-shadow-lg animate-glow-pulse">
                     Élisée & Lydia
                   </div>
+                  <p className="mt-6 text-xs font-sans uppercase tracking-[0.5em] text-african-ivory/50">
+                    Samedi 10 Octobre 2026 · Sweetlife Garden, Bounoumin
+                  </p>
                 </div>
               </footer>
             </div>
