@@ -33,39 +33,49 @@ export default function NotreHistoire() {
   }, []);
 
   return (
-    <section className="py-32 px-4 bg-luxury-bg relative" ref={containerRef}>
-      <div className="text-center mb-32">
-        <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-luxury-gold mb-6">Chapitres d'un amour</h2>
-        <h3 className="text-5xl md:text-7xl font-heading text-luxury-blue">Notre Histoire</h3>
+    <section className="py-32 px-4 bg-[#1A0B08] relative" ref={containerRef}>
+      {/* Background motif tribal subtil */}
+      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'%23CD7F32\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/svg%3E')" }}></div>
+
+      <div className="text-center mb-32 relative z-10">
+        <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Les Mémoires du Royaume</h2>
+        <h3 className="text-5xl md:text-7xl font-heading text-african-ivory drop-shadow-xl">Notre Histoire</h3>
       </div>
 
       <div className="max-w-4xl mx-auto relative flex flex-col items-center">
-        {/* Le Chemin Pavé */}
-        <div className="absolute top-0 bottom-0 w-24 bg-[url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cpath d=\\'M20 0L40 20L20 40L0 20L20 0z\\' fill=\\'%23C5A059\\' fill-opacity=\\'0.1\\' fill-rule=\\'evenodd\\'/%3E%3C/svg%3E')] z-0"></div>
+        {/* Le Chemin Royal (Ligne centrale en pointillés dorés) */}
+        <div className="absolute top-0 bottom-0 w-0.5 border-l-4 border-dotted border-african-gold/50 z-0"></div>
 
         {story.map((event, idx) => (
           <div key={idx} className={`story-arch relative z-10 flex w-full mb-32 ${idx % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
             
             <div className={`w-full md:w-5/12 ${idx % 2 === 0 ? 'pr-4 md:pr-12' : 'pl-4 md:pl-12'}`}>
-              {/* Arche de verre */}
-              <div className="glass-premium p-10 relative overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-[0_0_50px_rgba(197,160,89,0.3)] hover:-translate-y-2" style={{ borderRadius: '50% 50% 10px 10px' }}>
+              {/* Carte sculptée (Style bois et tissu) */}
+              <div className="bg-[#3E2723] p-10 relative overflow-hidden shadow-2xl transition-transform duration-700 hover:shadow-[0_0_50px_rgba(192,74,42,0.6)] hover:-translate-y-2 border border-african-bronze/50 group" style={{ borderRadius: '4px' }}>
                 
-                {/* Bloom floral simulé en CSS (halo coloré interne) */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-luxury-gold/20 rounded-full blur-3xl pointer-events-none"></div>
+                {/* Cadre tribal intérieur */}
+                <div className="absolute inset-2 border border-african-gold/30"></div>
+                {/* Petits losanges aux coins */}
+                <div className="absolute top-0 left-0 w-4 h-4 bg-african-gold rotate-45 -translate-x-2 -translate-y-2 opacity-50"></div>
+                <div className="absolute top-0 right-0 w-4 h-4 bg-african-gold rotate-45 translate-x-2 -translate-y-2 opacity-50"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 bg-african-gold rotate-45 -translate-x-2 translate-y-2 opacity-50"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 bg-african-gold rotate-45 translate-x-2 translate-y-2 opacity-50"></div>
 
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-10 border-t border-luxury-gold rounded-full opacity-50"></div>
+                {/* Lumière animée au survol */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-african-terra/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
-                <div className="text-center mt-12 relative z-10">
-                  <div className="gold-text font-heading text-5xl mb-4">{event.date}</div>
-                  <h4 className="text-2xl font-bold font-sans text-luxury-blue mb-4 uppercase tracking-widest text-sm">{event.title}</h4>
-                  <p className="text-luxury-blue/70 font-sans leading-loose text-sm">{event.text}</p>
+                <div className="text-center relative z-10">
+                  <div className="text-african-gold font-heading text-5xl mb-4 opacity-90 drop-shadow-md">{event.date}</div>
+                  <div className="w-16 h-px bg-african-copper mx-auto mb-4"></div>
+                  <h4 className="text-lg font-bold font-sans text-african-ivory mb-4 uppercase tracking-[0.2em]">{event.title}</h4>
+                  <p className="text-african-ivory/80 font-sans leading-loose text-sm font-light">{event.text}</p>
                 </div>
               </div>
             </div>
             
-            {/* Point de connexion or */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-luxury-bg border-4 border-luxury-gold rounded-full shadow-[0_0_20px_rgba(197,160,89,0.8)] z-20 flex items-center justify-center">
-              <div className="w-2 h-2 bg-luxury-gold rounded-full"></div>
+            {/* Point de connexion (Sceau tribal) */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-[#1A0B08] border-2 border-african-gold rotate-45 shadow-[0_0_20px_rgba(212,175,55,0.8)] z-20 flex items-center justify-center">
+              <div className="w-3 h-3 bg-african-copper rounded-full"></div>
             </div>
           </div>
         ))}
