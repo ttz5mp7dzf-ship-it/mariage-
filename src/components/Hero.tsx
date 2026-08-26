@@ -8,10 +8,12 @@ import { CheckCircle, Gift, BookOpen, ShoppingBag } from "lucide-react";
 export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [doorsOpen, setDoorsOpen] = useState(false);
+  const [doorOverlayVisible, setDoorOverlayVisible] = useState(true);
 
   useEffect(() => {
     if (isEntered) {
-      const timer = setTimeout(() => setDoorsOpen(true), 150);
+      setDoorsOpen(true);
+      const timer = setTimeout(() => setDoorOverlayVisible(false), 1400);
       return () => clearTimeout(timer);
     }
   }, [isEntered]);
@@ -35,35 +37,37 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
   return (
     <>
       {/* Portes du Royaume (African carved wood doors overlay) */}
-      <div className={`fixed inset-0 z-50 pointer-events-none flex ${doorsOpen ? '' : 'bg-[#1A0B08]'}`}>
-        <motion.div 
-          initial={{ x: 0 }}
-          animate={{ x: doorsOpen ? "-100%" : 0 }}
-          transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#2A1610] border-r-[6px] border-african-gold relative overflow-hidden shadow-[20px_0_50px_rgba(0,0,0,0.8)] z-10"
-        >
-          {/* Vrai Motif Africain */}
-          <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0B08]/80"></div>
+      {doorOverlayVisible && (
+        <div className="fixed inset-0 z-50 pointer-events-none flex">
+          <motion.div 
+            initial={{ x: 0 }}
+            animate={{ x: doorsOpen ? "-100%" : 0 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-1/2 h-full bg-[#2A1610] border-r-[6px] border-african-gold relative overflow-hidden shadow-[20px_0_50px_rgba(0,0,0,0.8)] z-10"
+          >
+            {/* Vrai Motif Africain */}
+            <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0B08]/80"></div>
+            
+            {/* Poignée de porte */}
+            <div className="absolute top-1/2 right-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
+          </motion.div>
           
-          {/* Poignée de porte */}
-          <div className="absolute top-1/2 right-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ x: 0 }}
-          animate={{ x: doorsOpen ? "100%" : 0 }}
-          transition={{ duration: 2.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="w-1/2 h-full bg-[#2A1610] border-l-[6px] border-african-gold relative overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.8)] z-10"
-        >
-          {/* Vrai Motif Africain (mirroir pour la symétrie) */}
-          <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1A0B08]/80"></div>
+          <motion.div 
+            initial={{ x: 0 }}
+            animate={{ x: doorsOpen ? "100%" : 0 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-1/2 h-full bg-[#2A1610] border-l-[6px] border-african-gold relative overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.8)] z-10"
+          >
+            {/* Vrai Motif Africain (mirroir pour la symétrie) */}
+            <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1A0B08]/80"></div>
 
-          {/* Poignée de porte */}
-          <div className="absolute top-1/2 left-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
-        </motion.div>
-      </div>
+            {/* Poignée de porte */}
+            <div className="absolute top-1/2 left-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
+          </motion.div>
+        </div>
+      )}
 
       <section id="accueil" className="relative min-h-screen w-full flex flex-col items-center justify-center pt-20 pb-32 scroll-mt-20">
         
@@ -90,7 +94,7 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
 
           {/* Informations */}
           <div className="absolute bottom-16 left-0 right-0 flex flex-col items-center text-center px-4">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 30 }} transition={{ delay: 1.2, duration: 1.5 }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 20 }} transition={{ delay: 0.3, duration: 0.8 }}>
                <h1 className="text-5xl md:text-8xl font-heading text-african-ivory drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)]">Élisée <span className="text-african-gold mx-2">&</span> Lydia</h1>
                <p className="text-african-gold text-lg md:text-2xl font-sans uppercase tracking-[0.4em] mt-4 mb-2 drop-shadow-md">Samedi 10 Octobre 2026</p>
                <p className="text-african-ivory/90 font-sans tracking-[0.5em] text-sm uppercase font-light">12h00 • Sweetlife Garden, BOUNOUMIN</p>
@@ -104,7 +108,7 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
           {[{ label: "Jours", value: timeLeft.days }, { label: "Heures", value: timeLeft.hours }, { label: "Minutes", value: timeLeft.minutes }, { label: "Secondes", value: timeLeft.seconds }].map((item, idx) => (
             <motion.div 
               key={idx} 
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 20 }} transition={{ delay: 1.5 + (idx * 0.1) }}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 20 }} transition={{ delay: 0.4 + (idx * 0.06), duration: 0.6 }}
               className="bg-[#3E2723]/90 backdrop-blur-md border border-african-bronze/50 px-4 py-6 md:px-8 md:py-8 rounded-t-full rounded-b-sm shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex flex-col items-center min-w-[70px] md:min-w-[120px] relative overflow-hidden group"
             >
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 bg-african-copper/30 rounded-full blur-xl group-hover:bg-african-gold/50 transition-colors duration-500"></div>
@@ -121,9 +125,9 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
 
         {/* Menu d'accès rapide avec finitions artisanales */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 30 }}
-          transition={{ delay: 2, duration: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 20 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
           className="mt-16 relative z-20 flex flex-wrap justify-center gap-4 px-4 w-full max-w-4xl"
         >
           <a

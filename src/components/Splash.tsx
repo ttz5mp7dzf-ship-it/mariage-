@@ -64,7 +64,7 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
 
   const handleEnter = () => {
     setStage(4);
-    setTimeout(onEnter, 600);
+    onEnter();
   };
 
   // Génération stable des motifs de pagne (pas de Math.random() dans le render)
