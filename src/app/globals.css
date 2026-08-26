@@ -53,6 +53,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 section {
@@ -64,15 +65,18 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Glassmorphism de haute joaillerie */
+/* Glassmorphism de haute joaillerie compatible Safari */
 .glass-premium {
-  background: rgba(255, 253, 249, 0.4);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(197, 160, 89, 0.4); /* Gold */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  background: rgba(26, 11, 8, 0.75);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(212, 175, 55, 0.4); /* Gold */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .gold-text {

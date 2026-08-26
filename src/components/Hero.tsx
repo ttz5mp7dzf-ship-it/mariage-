@@ -55,8 +55,8 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
             className="w-1/2 h-full bg-[#2A1610] border-r-[6px] border-african-gold relative overflow-hidden shadow-[20px_0_50px_rgba(0,0,0,0.8)] z-10"
           >
             {/* Vrai Motif Africain */}
-            <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#1A0B08]/80"></div>
+            <div className="absolute inset-0 opacity-70 bg-cover bg-center" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1A0B08]/40 to-[#1A0B08]/80"></div>
             
             {/* Poignée de porte */}
             <div className="absolute top-1/2 right-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
@@ -69,8 +69,8 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
             className="w-1/2 h-full bg-[#2A1610] border-l-[6px] border-african-gold relative overflow-hidden shadow-[-20px_0_50px_rgba(0,0,0,0.8)] z-10"
           >
             {/* Vrai Motif Africain (mirroir pour la symétrie) */}
-            <div className="absolute inset-0 opacity-60 mix-blend-luminosity bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1A0B08]/80"></div>
+            <div className="absolute inset-0 opacity-70 bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-2.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#1A0B08]/40 to-[#1A0B08]/80"></div>
 
             {/* Poignée de porte */}
             <div className="absolute top-1/2 left-4 -translate-y-1/2 w-4 h-40 bg-african-gold rounded-full shadow-[0_0_20px_rgba(212,175,55,0.5)] border-2 border-[#1A0B08]"></div>
@@ -97,9 +97,9 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
             />
           </motion.div>
 
-          {/* Traitement lumineux chaud */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B08] via-transparent to-african-copper/30 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1A0B08] opacity-90"></div>
+          {/* Traitement lumineux chaud (compatible 100% Safari) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B08] via-transparent to-[#B87333]/20 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1A0B08]/90 pointer-events-none"></div>
 
           {/* Informations */}
           <div className="absolute bottom-16 left-0 right-0 flex flex-col items-center text-center px-4">

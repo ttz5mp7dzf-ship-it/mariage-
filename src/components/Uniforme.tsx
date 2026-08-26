@@ -66,19 +66,17 @@ export default function Uniforme() {
   };
 
   return (
-    <section id="pagne" className="py-32 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden perspective-[1000px] bg-transparent scroll-mt-20">
+    <section id="pagne" className="py-32 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden bg-transparent scroll-mt-20">
       
-      {/* Tissu de pagne ondulant en fond */}
-      <motion.div
-        animate={{ rotateX: [0, 5, 0, -5, 0], rotateY: [0, -3, 0, 3, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute inset-0 opacity-20 transform-gpu animate-fabric-wave"
+      {/* Tissu de pagne en fond (haute performance GPU pour Safari) */}
+      <div
+        className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
           backgroundImage: "repeating-linear-gradient(45deg, var(--color-african-terra) 0px, var(--color-african-terra) 15px, var(--color-african-gold) 15px, var(--color-african-gold) 30px, var(--color-african-bronze) 30px, var(--color-african-bronze) 45px, var(--color-african-copper) 45px, var(--color-african-copper) 60px, var(--color-african-brown) 60px, var(--color-african-brown) 75px)",
           backgroundSize: "200% 200%",
         }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#2A1610_100%)] opacity-90" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#2A1610_100%)] opacity-90 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto w-full relative z-10">
         <div className="text-center mb-12">

@@ -28,19 +28,24 @@ export default function Home() {
         {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
           <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
 
-          {/* Halos de lumière chaude animés */}
-          <div className="fixed inset-0 z-0 pointer-events-none">
-            <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-african-copper/15 blur-[150px] mix-blend-screen animate-pulse-slow" />
-            <div className="absolute top-[20%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-african-terra/12 blur-[180px] mix-blend-screen animate-pulse-slow" style={{ animationDelay: "2s" }} />
-            <div className="absolute bottom-[-20%] left-[10%] w-[80vw] h-[80vw] rounded-full bg-african-gold/8 blur-[160px] mix-blend-screen animate-pulse-slow" style={{ animationDelay: "4s" }} />
-
-            {/* Motif géométrique africain subtil en fond global */}
+          {/* Halos de lumière chaude haute performance (compatible 100% Safari & tous navigateurs) */}
+          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
             <div
-              className="absolute inset-0 opacity-[0.04]"
+              className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-30"
               style={{
-                backgroundImage:
-                  "url('data:image/svg+xml,%3Csvg width%3D%2260%22 height%3D%2260%22 viewBox%3D%220 0 60 60%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22%23CD7F32%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M30 0L60 30L30 60L0 30L30 0ZM30 10L10 30L30 50L50 30L30 10Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')",
-                backgroundSize: "60px 60px",
+                background: "radial-gradient(circle, rgba(192,74,42,0.4) 0%, rgba(192,74,42,0.1) 40%, transparent 70%)",
+              }}
+            />
+            <div
+              className="absolute top-[25%] -right-[10%] w-[70vw] h-[70vw] rounded-full opacity-25"
+              style={{
+                background: "radial-gradient(circle, rgba(212,175,55,0.35) 0%, rgba(184,115,51,0.1) 45%, transparent 70%)",
+              }}
+            />
+            <div
+              className="absolute -bottom-[20%] left-[10%] w-[80vw] h-[80vw] rounded-full opacity-20"
+              style={{
+                background: "radial-gradient(circle, rgba(205,127,50,0.3) 0%, rgba(62,39,35,0.1) 50%, transparent 70%)",
               }}
             />
           </div>
