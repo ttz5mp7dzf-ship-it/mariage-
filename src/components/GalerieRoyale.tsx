@@ -9,9 +9,9 @@ export default function GalerieRoyale() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const photos = [
-    { src: "/couple.jpg", title: "L'Étincelle", desc: "Le commencement de notre éternité" },
-    { src: "/palais.jpg", title: "La Promesse", desc: "Un oui murmuré dans le vent" },
-    { src: "/couple.jpg", title: "Le Couronnement", desc: "Notre marche vers l'autel" },
+    { src: "/ouverture.jpg", title: "La Royauté", desc: "Vêtus des parures de la cour royale", position: "object-top" },
+    { src: "/couple.jpg", title: "L'Alliance Dorée", desc: "Deux âmes unies sous l'or et le pagne", position: "object-center" },
+    { src: "/ouverture.jpg", title: "Le Royaume", desc: "Ensemble pour l'éternité", position: "object-center" },
   ];
 
   return (
@@ -49,7 +49,7 @@ export default function GalerieRoyale() {
                   src={photo.src} 
                   alt={photo.title} 
                   fill 
-                  className="object-cover object-top transition-transform duration-[2s] ease-out group-hover:scale-110 sepia-[0.2] group-hover:sepia-0" 
+                  className={`object-cover ${photo.position} transition-transform duration-[2s] ease-out group-hover:scale-110 sepia-[0.2] group-hover:sepia-0`}
                 />
                 
                 {/* Overlay sombre au hover */}

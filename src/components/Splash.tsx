@@ -95,7 +95,7 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
             transition={{ duration: 12, ease: "easeOut" }}
             className="absolute inset-0"
           >
-            <Image src="/palais.jpg" alt="Palais Royal" fill className="object-cover" priority />
+            <Image src="/ouverture.jpg" alt="Élisée & Lydia — La Cour Royale" fill className="object-cover object-top" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-[#3E2723]/40 to-black/30"></div>
           </motion.div>
 
