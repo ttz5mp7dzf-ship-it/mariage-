@@ -66,6 +66,208 @@ const giftCategories: Record<string, string[]> = {
 };
 
 // ============================
+// GÉNÉRATION RAPIDE CARTE EN CANVAS NATIF (sans html2canvas)
+// ============================
+async function generateCardCanvas(data: FormData): Promise<string> {
+  const canvas = document.createElement("canvas");
+  canvas.width = 900;
+  canvas.height = 1300;
+  const ctx = canvas.getContext("2d")!;
+
+  // Fond sombre
+  ctx.fillStyle = "#1A0B08";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Motif géométrique en filigrane
+  ctx.save();
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = "#CD7F32";
+  for (let x = 0; x < canvas.width; x += 60) {
+    for (let y = 0; y < canvas.height; y += 60) {
+      ctx.save();
+      ctx.translate(x + 30, y + 30);
+      ctx.rotate(Math.PI / 4);
+      ctx.fillRect(-10, -10, 20, 20);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+
+  // Bordure extérieure or
+  ctx.strokeStyle = "#D4AF37";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+
+  // Bordure intérieure cuivre
+  ctx.strokeStyle = "#CD7F32";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
+
+  // Losanges dorés aux 4 coins
+  const drawDiamond = (cx: number, cy: number) => {
+    ctx.save();
+    ctx.fillStyle = "#D4AF37";
+    ctx.translate(cx, cy);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-14, -14, 28, 28);
+    ctx.restore();
+  };
+  drawDiamond(12, 12);
+  drawDiamond(canvas.width - 12, 12);
+  drawDiamond(12, canvas.height - 12);
+  drawDiamond(canvas.width - 12, canvas.height - 12);
+
+  // En-tête : "INVITATION ROYALE"
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 22px sans-serif";
+  ctx.textAlign = "center";
+  ctx.letterSpacing = "8px";
+  ctx.fillText("✦  INVITATION ROYALE  ✦", canvas.width / 2, 90);
+
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 44px Georgia, serif";
+  ctx.fillText("La Cour Royale", canvas.width / 2, 148);
+
+  // Ligne séparatrice
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.4;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 168); ctx.lineTo(820, 168);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Photo des mariés (arche royale)
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = document.createElement("img") as HTMLImageElement;
+      i.crossOrigin = "anonymous";
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = "/ouverture.jpg";
+    });
+    // Clip en arche (rectangle + demi-cercle)
+    const px = 330, py = 188, pw = 240, ph = 320, r = pw / 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(px + r, py + r, r, Math.PI, 0);
+    ctx.lineTo(px + pw, py + ph);
+    ctx.lineTo(px, py + ph);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, px, py, pw, ph);
+    ctx.restore();
+
+    // Cadre or sur la photo
+    ctx.strokeStyle = "#D4AF37";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(px + r, py + r, r + 2, Math.PI, 0);
+    ctx.lineTo(px + pw + 2, py + ph);
+    ctx.lineTo(px - 2, py + ph);
+    ctx.closePath();
+    ctx.stroke();
+  } catch {
+    // Photo non chargée – continuer sans
+  }
+
+  // Noms des mariés
+  ctx.fillStyle = "#FDFBF7";
+  ctx.font = "bold 56px Georgia, serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Élisée & Lydia", canvas.width / 2, 570);
+
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "18px sans-serif";
+  ctx.fillText("Uniront leurs destinées devant Dieu et les Hommes", canvas.width / 2, 605);
+
+  // Séparateur losanges
+  ctx.fillStyle = "#CD7F32";
+  for (let i = 0; i < 5; i++) {
+    ctx.save();
+    ctx.translate(canvas.width / 2 + (i - 2) * 26, 630);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-5, -5, 10, 10);
+    ctx.restore();
+  }
+
+  // Bloc invité d'honneur
+  ctx.fillStyle = "#2A1610";
+  ctx.fillRect(60, 655, canvas.width - 120, 250);
+  ctx.strokeStyle = "#D4AF37";
+  ctx.lineWidth = 1.5;
+  ctx.globalAlpha = 0.5;
+  ctx.strokeRect(60, 655, canvas.width - 120, 250);
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 16px sans-serif";
+  ctx.fillText("INVITÉ(E) D'HONNEUR", canvas.width / 2, 688);
+
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 46px Georgia, serif";
+  ctx.fillText(data.name.toUpperCase(), canvas.width / 2, 742);
+
+  // Statut présence
+  const presenceText = data.present === "oui"
+    ? `✓  Présence confirmée — ${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""}`
+    : data.present === "non" ? "✗  Absent(e) de cœur" : "?  Présence à confirmer";
+  ctx.fillStyle = data.present === "oui" ? "#86efac" : "#CD7F32";
+  ctx.font = "18px sans-serif";
+  ctx.fillText(presenceText, canvas.width / 2, 778);
+
+  // Menu
+  if (data.present === "oui" && data.mainDish) {
+    ctx.fillStyle = "#CD7F32";
+    ctx.font = "bold 14px sans-serif";
+    ctx.fillText("MENU SÉLECTIONNÉ", canvas.width / 2, 812);
+    ctx.fillStyle = "#FDFBF7";
+    ctx.font = "20px sans-serif";
+    ctx.fillText(data.mainDish, canvas.width / 2, 840);
+    if (data.sideDish) {
+      ctx.fillStyle = "#FDFBF7";
+      ctx.globalAlpha = 0.65;
+      ctx.font = "17px sans-serif";
+      ctx.fillText(data.sideDish, canvas.width / 2, 866);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Ligne détails
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.3;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 935); ctx.lineTo(820, 935);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Détails pratiques
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 16px sans-serif";
+  ctx.fillText("📅  10 Octobre 2026   •   🕛  12h00   •   📍  Sweetlife Garden, Bounoumin", canvas.width / 2, 975);
+
+  // Bas de carte
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.3;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 1010); ctx.lineTo(820, 1010);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 14px sans-serif";
+  ctx.globalAlpha = 0.75;
+  ctx.fillText("SCEAU ROYAL AUTHENTIQUE", 200, 1050);
+  ctx.textAlign = "right";
+  ctx.fillText("ÉLISÉE & LYDIA 2026", 730, 1050);
+  ctx.globalAlpha = 1;
+
+  return canvas.toDataURL("image/png");
+}
+
+// ============================
 // CARTE D'INVITATION ROYALE PERSONNALISÉE HAUT DE GAMME
 // ============================
 function RoyalInvitationCard({
@@ -77,35 +279,42 @@ function RoyalInvitationCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
+  const [autoDownloaded, setAutoDownloaded] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     const t1 = setTimeout(() => setStep(1), 300);
-    const t2 = setTimeout(() => setStep(2), 800);
-    const t3 = setTimeout(() => setStep(3), 1400);
-    const t4 = setTimeout(() => setStep(4), 2000);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
+    const t2 = setTimeout(() => setStep(2), 600);
+    const t3 = setTimeout(() => setStep(3), 900);
+    const t4 = setTimeout(() => setStep(4), 1200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, []);
 
+  // ✅ Téléchargement automatique rapide au montage
+  useEffect(() => {
+    if (autoDownloaded) return;
+    const timer = setTimeout(async () => {
+      setAutoDownloaded(true);
+      try {
+        const dataUrl = await generateCardCanvas(data);
+        const link = document.createElement("a");
+        link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
+        link.href = dataUrl;
+        link.click();
+      } catch (e) {
+        console.error("Auto-téléchargement échoué:", e);
+      }
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [data, autoDownloaded]);
+
   const handleDownload = async () => {
-    if (!cardRef.current) return;
     setDownloading(true);
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: "#1A0B08",
-        logging: false,
-      });
+      const dataUrl = await generateCardCanvas(data);
       const link = document.createElement("a");
-      link.download = `invitation-royale-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
+      link.href = dataUrl;
       link.click();
     } catch (e) {
       console.error("Erreur génération carte:", e);
@@ -143,6 +352,14 @@ function RoyalInvitationCard({
         <p className="text-african-sand/80 font-sans text-sm sm:text-base leading-relaxed">
           Merci pour votre confirmation. Voici votre invitation d'honneur officielle à la célébration d'Élisée & Lydia.
         </p>
+        {/* Indicateur auto-téléchargement */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: autoDownloaded ? 1 : 0 }}
+          className="mt-3 inline-flex items-center gap-2 text-xs text-green-400 font-sans"
+        >
+          <CheckCircle size={14} /> Carte téléchargée automatiquement !
+        </motion.div>
       </motion.div>
 
       {/* ===== LA CARTE D'INVITATION ROYALE (Format d'Artiste Graphiste) ===== */}
@@ -323,7 +540,7 @@ function RoyalInvitationCard({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.5 }}
         className="flex flex-wrap items-center justify-center gap-4 max-w-xl w-full px-4"
       >
         {/* Bouton Téléchargement Haute Résolution */}
@@ -333,7 +550,7 @@ function RoyalInvitationCard({
           className="flex-1 min-w-[240px] py-4 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
         >
           <Download size={18} className={downloading ? "animate-bounce" : ""} />
-          <span>{downloading ? "Génération en cours..." : "Télécharger ma Carte"}</span>
+          <span>{downloading ? "Génération..." : "⬇ Télécharger ma Carte"}</span>
         </button>
 
         {/* Bouton Voir le Pagne */}
