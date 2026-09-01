@@ -125,20 +125,20 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
             ))}
           </AnimatePresence>
 
-          {/* ===== PORTES ROYALES AFRICAINES ===== */}
+          {/* ===== PORTES ROYALES AFRICAINES (Nouveau Motif Tribal Authentique) ===== */}
           <motion.div
             initial={{ rotateY: 0 }}
             animate={{ rotateY: stage >= 1 ? -120 : 0 }}
             transition={{ duration: 3.5, ease: "easeInOut" }}
             style={{ transformOrigin: "left center", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
-            className="absolute top-0 left-0 w-1/2 h-full bg-[#1A0B08] border-r-[6px] border-african-gold flex justify-end items-center z-20 shadow-[20px_0_50px_rgba(0,0,0,0.9)]"
+            className="absolute top-0 left-0 w-1/2 h-full bg-[#1A0B08] border-r-[6px] border-african-gold flex justify-end items-center z-20 shadow-[20px_0_50px_rgba(0,0,0,0.95)]"
           >
-            <div className="absolute inset-0 opacity-70 bg-cover bg-center" style={{ backgroundImage: "url('/motif-3.jpg')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#1A0B08]/40 to-[#1A0B08]/90"></div>
+            <div className="absolute inset-0 opacity-95 bg-cover bg-center" style={{ backgroundImage: "url('/porte-royale.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-[#1A0B08]/70"></div>
             {/* Ornements dorés sur la porte */}
-            <div className="absolute right-4 w-6 h-48 bg-african-gold rounded-full shadow-2xl border-2 border-[#1A0B08]"></div>
-            <div className="absolute top-8 right-10 w-8 h-8 bg-african-gold rotate-45 opacity-60"></div>
-            <div className="absolute bottom-8 right-10 w-8 h-8 bg-african-gold rotate-45 opacity-60"></div>
+            <div className="absolute right-4 w-6 h-48 bg-african-gold rounded-full shadow-[0_0_25px_rgba(212,175,55,0.7)] border-2 border-[#1A0B08]"></div>
+            <div className="absolute top-8 right-10 w-8 h-8 bg-african-gold rotate-45 opacity-70 shadow-md"></div>
+            <div className="absolute bottom-8 right-10 w-8 h-8 bg-african-gold rotate-45 opacity-70 shadow-md"></div>
           </motion.div>
 
           <motion.div
@@ -146,13 +146,13 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
             animate={{ rotateY: stage >= 1 ? 120 : 0 }}
             transition={{ duration: 3.5, ease: "easeInOut" }}
             style={{ transformOrigin: "right center", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
-            className="absolute top-0 right-0 w-1/2 h-full bg-[#1A0B08] border-l-[6px] border-african-gold flex justify-start items-center z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.9)]"
+            className="absolute top-0 right-0 w-1/2 h-full bg-[#1A0B08] border-l-[6px] border-african-gold flex justify-start items-center z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.95)]"
           >
-            <div className="absolute inset-0 opacity-70 bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/motif-3.jpg')" }}></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#1A0B08]/40 to-[#1A0B08]/90"></div>
-            <div className="absolute left-4 w-6 h-48 bg-african-gold rounded-full shadow-2xl border-2 border-[#1A0B08]"></div>
-            <div className="absolute top-8 left-10 w-8 h-8 bg-african-gold rotate-45 opacity-60"></div>
-            <div className="absolute bottom-8 left-10 w-8 h-8 bg-african-gold rotate-45 opacity-60"></div>
+            <div className="absolute inset-0 opacity-95 bg-cover bg-center -scale-x-100" style={{ backgroundImage: "url('/porte-royale.jpg')" }}></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-[#1A0B08]/70"></div>
+            <div className="absolute left-4 w-6 h-48 bg-african-gold rounded-full shadow-[0_0_25px_rgba(212,175,55,0.7)] border-2 border-[#1A0B08]"></div>
+            <div className="absolute top-8 left-10 w-8 h-8 bg-african-gold rotate-45 opacity-70 shadow-md"></div>
+            <div className="absolute bottom-8 left-10 w-8 h-8 bg-african-gold rotate-45 opacity-70 shadow-md"></div>
           </motion.div>
 
           {/* ===== CONTENU CENTRAL ===== */}
