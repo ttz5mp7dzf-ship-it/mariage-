@@ -19,14 +19,26 @@ type FormData = {
 };
 
 const plats = [
-  "Médaillons de bœuf au poivre",
-  "Filet de bar rôti, sauce agrumes",
-  "Risotto aux champignons sauvages",
+  "Sauce Kôpê",
+  "Sauce Foufou",
+  "Kplé",
+  "Soupe de pâte de bœuf",
+  "Tchep blanc viande / poisson",
+  "Sauce tomate",
+  "Poulet braisé",
+  "Poisson braisé",
 ];
+
 const accompagnements = [
-  "Gratin dauphinois revisité",
-  "Légumes de saison glacés",
-  "Mousseline de patates douces",
+  "Alloco",
+  "Pommes de terre sautées",
+  "Riz blanc",
+  "Attiéké blanc",
+  "Attiéké rouge",
+  "Foufou",
+  "Foutou banane",
+  "Placali",
+  "Abolo",
 ];
 
 const giftCategories: Record<string, string[]> = {
@@ -43,12 +55,6 @@ const giftCategories: Record<string, string[]> = {
     "friteuse", "air fryer", "extracteur de jus", "appareil à raclette", "machine à laver",
     "sèche-linge", "aspirateur", "fer à repasser", "centrale vapeur", "ventilateur",
     "climatiseur", "purificateur d'air", "chauffe-eau", "Autre électroménager",
-  ],
-  "Électronique & High-Tech": [
-    "télévision", "vidéoprojecteur", "ordinateur portable", "tablette", "smartphone",
-    "enceinte Bluetooth", "système audio", "home cinéma", "casque audio", "écouteurs",
-    "montre connectée", "appareil photo", "caméra", "console de jeux",
-    "accessoires informatiques", "imprimante", "disque dur", "Autre électronique",
   ],
   "Expérience": [
     "voyage", "week-end", "séjour romantique", "dîner gastronomique", "dîner romantique",

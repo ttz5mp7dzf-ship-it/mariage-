@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Gift, Home, Laptop, Wallet, Plane } from "lucide-react";
+import { Gift, Home, Wallet, Plane } from "lucide-react";
 
 const cadeauxList = [
   { 
@@ -16,12 +16,6 @@ const cadeauxList = [
     icon: Gift,
     desc: "L'équipement pour notre quotidien.",
     image: "/electromenager.jpg" 
-  },
-  { 
-    title: "Électronique",
-    icon: Laptop,
-    desc: "Connectivité et divertissement.",
-    image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=800&q=80" 
   },
   { 
     title: "Expériences",
@@ -59,7 +53,7 @@ export default function Cadeaux() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {cadeauxList.map((cadeau, idx) => {
             const Icon = cadeau.icon;
             return (
