@@ -268,7 +268,7 @@ async function generateCardCanvas(data: FormData): Promise<string> {
 }
 
 // ============================
-// CARTE D'INVITATION ROYALE PERSONNALISÉE HAUT DE GAMME
+// CARTE D'INVITATION ROYALE — COMPATIBLE SAFARI iOS
 // ============================
 function RoyalInvitationCard({
   data,
@@ -277,51 +277,9 @@ function RoyalInvitationCard({
   data: FormData;
   onReset: () => void;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
-  const [autoDownloaded, setAutoDownloaded] = useState(false);
-  const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setStep(1), 300);
-    const t2 = setTimeout(() => setStep(2), 600);
-    const t3 = setTimeout(() => setStep(3), 900);
-    const t4 = setTimeout(() => setStep(4), 1200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, []);
-
-  // ✅ Téléchargement automatique rapide au montage
-  useEffect(() => {
-    if (autoDownloaded) return;
-    const timer = setTimeout(async () => {
-      setAutoDownloaded(true);
-      try {
-        const dataUrl = await generateCardCanvas(data);
-        const link = document.createElement("a");
-        link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
-        link.href = dataUrl;
-        link.click();
-      } catch (e) {
-        console.error("Auto-téléchargement échoué:", e);
-      }
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [data, autoDownloaded]);
-
-  const handleDownload = async () => {
-    setDownloading(true);
-    try {
-      const dataUrl = await generateCardCanvas(data);
-      const link = document.createElement("a");
-      link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (e) {
-      console.error("Erreur génération carte:", e);
-    } finally {
-      setDownloading(false);
-    }
-  };
+  const [cardImageUrl, setCardImageUrl] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(true);
+  const [isIOS, setIsIOS] = useState(false);
 
   const giftDisplay =
     data.giftCategory === "Don en numéraire"
@@ -334,247 +292,153 @@ function RoyalInvitationCard({
       ? `${data.giftCategory} — ${data.giftSubCategory}`
       : data.giftCategory;
 
+  // Détecter iOS Safari
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    const ios = /iPad|iPhone|iPod/.test(ua) && !(window as unknown as Record<string, unknown>).MSStream;
+    setIsIOS(ios);
+  }, []);
+
+  // Générer la carte immédiatement au montage
+  useEffect(() => {
+    setGenerating(true);
+    generateCardCanvas(data)
+      .then((url) => {
+        setCardImageUrl(url);
+        setGenerating(false);
+      })
+      .catch((e) => {
+        console.error("Erreur génération carte:", e);
+        setGenerating(false);
+      });
+  }, [data]);
+
+  const handleDownload = () => {
+    if (!cardImageUrl) return;
+    if (isIOS) {
+      // iOS Safari : ouvrir l'image dans un nouvel onglet pour permettre "Enregistrer l'image"
+      window.open(cardImageUrl, "_blank");
+    } else {
+      // Desktop / Android : téléchargement direct
+      const link = document.createElement("a");
+      link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
+      link.href = cardImageUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
-    <div className="w-full flex flex-col items-center gap-10 py-6">
-      
-      {/* Entête de Confirmation */}
+    <div className="w-full flex flex-col items-center gap-8 py-6 px-4">
+
+      {/* Badge confirmation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center max-w-2xl px-4"
+        className="text-center max-w-2xl"
       >
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-african-gold/15 border border-african-gold/40 text-african-gold text-xs uppercase tracking-[0.25em] font-bold mb-4">
           <ShieldCheck size={16} /> Inscription Officielle Enregistrée
         </div>
-        <h3 className="text-3xl sm:text-5xl font-heading text-african-ivory mb-3">
-          Votre Carte Royale Personnalisée
+        <h3 className="text-3xl sm:text-4xl font-heading text-african-ivory mb-2">
+          Votre Carte Royale 👑
         </h3>
-        <p className="text-african-sand/80 font-sans text-sm sm:text-base leading-relaxed">
-          Merci pour votre confirmation. Voici votre invitation d'honneur officielle à la célébration d'Élisée & Lydia.
+        <p className="text-african-sand/80 font-sans text-sm leading-relaxed">
+          Votre invitation personnalisée est prête. Appuyez sur le bouton ci-dessous pour la télécharger.
         </p>
-        {/* Indicateur auto-téléchargement */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: autoDownloaded ? 1 : 0 }}
-          className="mt-3 inline-flex items-center gap-2 text-xs text-green-400 font-sans"
-        >
-          <CheckCircle size={14} /> Carte téléchargée automatiquement !
-        </motion.div>
       </motion.div>
 
-      {/* ===== LA CARTE D'INVITATION ROYALE (Format d'Artiste Graphiste) ===== */}
-      <div
-        ref={cardRef}
-        className="w-full max-w-xl bg-[#1A0B08] border-4 border-african-gold relative overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] rounded-sm p-6 sm:p-10"
-        style={{ minHeight: "720px" }}
-      >
-        {/* Texture textile africaine en filigrane */}
-        <div
-          className="absolute inset-0 opacity-15 pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('data:image/svg+xml,%3Csvg width%3D%2260%22 height%3D%2260%22 viewBox%3D%220 0 60 60%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg fill%3D%22%23CD7F32%22 fill-rule%3D%22evenodd%22%3E%3Cpath d%3D%22M30 0L60 30L30 60L0 30L30 0ZM30 10L10 30L30 50L50 30L30 10Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')",
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Double Cadre Géométrique Doré */}
-        <div className="absolute inset-3 border border-african-copper/60 pointer-events-none" />
-        <div className="absolute inset-5 border border-african-gold/30 pointer-events-none" />
-
-        {/* 4 Losanges Sculptés aux Coins */}
-        <div className="absolute top-2 left-2 w-5 h-5 bg-african-gold rotate-45 pointer-events-none shadow-md" />
-        <div className="absolute top-2 right-2 w-5 h-5 bg-african-gold rotate-45 pointer-events-none shadow-md" />
-        <div className="absolute bottom-2 left-2 w-5 h-5 bg-african-gold rotate-45 pointer-events-none shadow-md" />
-        <div className="absolute bottom-2 right-2 w-5 h-5 bg-african-gold rotate-45 pointer-events-none shadow-md" />
-
-        {/* CONTENU GRAPHIQUE */}
-        <div className="relative z-10 flex flex-col items-center text-center">
-          
-          {/* Header de la Carte */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: step >= 1 ? 1 : 0, y: step >= 1 ? 0 : -10 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4"
-          >
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <div className="h-px w-12 bg-african-gold/60" />
-              <span className="text-[10px] sm:text-xs font-sans uppercase tracking-[0.4em] text-african-copper font-bold">
-                Invitation Royale
-              </span>
-              <div className="h-px w-12 bg-african-gold/60" />
-            </div>
-            <h4 className="text-xl sm:text-2xl font-deco uppercase tracking-[0.3em] text-african-gold drop-shadow-md">
-              La Cour Royale
-            </h4>
-          </motion.div>
-
-          {/* ===== PHOTO DES MARIÉS AVEC ARCHITECTURE ROYALE ===== */}
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: step >= 1 ? 1 : 0.9, opacity: step >= 1 ? 1 : 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative w-36 h-48 sm:w-44 sm:h-56 rounded-t-full border-4 border-african-gold overflow-hidden shadow-2xl my-2 bg-[#2A1610]"
-          >
-            <Image
-              src="/ouverture.jpg"
-              alt="Élisée & Lydia"
-              fill
-              sizes="200px"
-              className="object-cover object-top brightness-105 contrast-105"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B08]/70 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-african-gold rotate-45 border-2 border-[#1A0B08] shadow-md" />
-          </motion.div>
-
-          {/* NOMS DES MARIÉS */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: step >= 2 ? 1 : 0 }}
-            transition={{ duration: 0.6 }}
-            className="my-3"
-          >
-            <h2 className="text-3xl sm:text-4xl font-heading text-african-ivory font-bold drop-shadow-md">
-              Élisée <span className="text-african-gold font-normal font-sans">&</span> Lydia
-            </h2>
-            <p className="text-[11px] font-sans uppercase tracking-[0.3em] text-african-sand/80 mt-1">
-              Uniront leurs destinées devant Dieu et les Hommes
-            </p>
-          </motion.div>
-
-          {/* SÉPARATEUR GÉOMÉTRIQUE */}
-          <div className="flex items-center justify-center gap-2 my-2 w-full max-w-xs">
-            <div className="h-px flex-1 bg-african-gold/40" />
-            <div className="w-2 h-2 bg-african-copper rotate-45" />
-            <div className="w-3 h-3 border border-african-gold rotate-45" />
-            <div className="w-2 h-2 bg-african-copper rotate-45" />
-            <div className="h-px flex-1 bg-african-gold/40" />
-          </div>
-
-          {/* BLOC INVITÉ D'HONNEUR */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: step >= 3 ? 1 : 0, y: step >= 3 ? 0 : 15 }}
-            transition={{ duration: 0.6 }}
-            className="w-full bg-[#2A1610]/80 border border-african-gold/40 p-4 sm:p-5 rounded-sm my-3 backdrop-blur-sm"
-          >
-            <span className="text-[9px] sm:text-[10px] font-sans uppercase tracking-[0.35em] text-african-copper font-bold block mb-1">
-              Invité(e) d'Honneur
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-heading text-african-gold font-bold uppercase tracking-wider">
-              {data.name}
-            </h3>
-
-            {/* Statut de présence */}
-            <div className="mt-2 inline-flex items-center gap-2 text-xs font-sans uppercase tracking-widest text-african-ivory/90 bg-[#1A0B08]/80 px-3 py-1 border border-african-bronze/50 rounded-sm">
-              <CheckCircle size={14} className={data.present === "oui" ? "text-green-400" : "text-african-copper"} />
-              <span>
-                {data.present === "oui"
-                  ? `Présence confirmée (${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""})`
-                  : data.present === "non"
-                  ? "Absent(e) de cœur"
-                  : "Présence à confirmer"}
-              </span>
-            </div>
-
-            {/* Choix du Menu si présent */}
-            {data.present === "oui" && data.mainDish && (
-              <div className="mt-3 pt-3 border-t border-african-gold/20 flex flex-col items-center text-xs font-sans text-african-sand/80">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-african-copper font-bold mb-0.5">
-                  Menu Sélectionné
-                </span>
-                <p className="text-african-ivory font-medium">{data.mainDish}</p>
-                {data.sideDish && <p className="text-african-ivory/60 text-[11px]">{data.sideDish}</p>}
-              </div>
-            )}
-
-            {/* Offrande choisie */}
-            {giftDisplay && (
-              <div className="mt-2 pt-2 border-t border-african-gold/15 text-xs font-sans text-african-sand/80">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-african-copper font-bold mr-1.5">
-                  Offrande :
-                </span>
-                <span className="text-african-gold font-medium">{giftDisplay}</span>
-              </div>
-            )}
-          </motion.div>
-
-          {/* DÉTAILS PRATIQUES DU MARIAGE */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: step >= 4 ? 1 : 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-3 gap-2 w-full text-center py-2 px-1 border-t border-b border-african-gold/20 my-2"
-          >
-            <div className="flex flex-col items-center">
-              <Calendar size={14} className="text-african-gold mb-1" />
-              <span className="text-[9px] uppercase tracking-wider text-african-copper font-bold">Date</span>
-              <span className="text-xs font-sans text-african-ivory font-semibold">10 Oct 2026</span>
-            </div>
-
-            <div className="flex flex-col items-center border-l border-r border-african-gold/20">
-              <Clock size={14} className="text-african-gold mb-1" />
-              <span className="text-[9px] uppercase tracking-wider text-african-copper font-bold">Heure</span>
-              <span className="text-xs font-sans text-african-ivory font-semibold">12h00</span>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <MapPin size={14} className="text-african-gold mb-1" />
-              <span className="text-[9px] uppercase tracking-wider text-african-copper font-bold">Lieu</span>
-              <span className="text-xs font-sans text-african-ivory font-semibold leading-tight">Sweetlife Garden</span>
-              <span className="text-[9px] text-african-sand/60">Bounoumin</span>
-            </div>
-          </motion.div>
-
-          {/* Sceau de conclusion */}
-          <div className="mt-3 flex items-center justify-between w-full text-[9px] font-sans uppercase tracking-[0.3em] text-african-copper/80">
-            <span>Sceau Royal Authentique</span>
-            <span>Élisée & Lydia 2026</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ===== ACTIONS POST-INSCRIPTION ===== */}
+      {/* ===== CARTE GÉNÉRÉE EN IMAGE (affiché instantanément) ===== */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex flex-wrap items-center justify-center gap-4 max-w-xl w-full px-4"
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-sm"
       >
-        {/* Bouton Téléchargement Haute Résolution */}
-        <button
-          onClick={handleDownload}
-          disabled={downloading}
-          className="flex-1 min-w-[240px] py-4 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
-        >
-          <Download size={18} className={downloading ? "animate-bounce" : ""} />
-          <span>{downloading ? "Génération..." : "⬇ Télécharger ma Carte"}</span>
-        </button>
-
-        {/* Bouton Voir le Pagne */}
-        <a
-          href="#pagne"
-          onClick={(e) => {
-            e.preventDefault();
-            document.getElementById("pagne")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="py-4 px-6 bg-[#3E2723] border border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:bg-african-gold hover:text-[#1A0B08] transition-all flex items-center justify-center gap-2.5 cursor-pointer text-center"
-        >
-          <ShoppingBag size={17} />
-          <span>Voir le Pagne Officiel</span>
-        </a>
-
-        {/* Bouton Modifier */}
-        <button
-          onClick={onReset}
-          className="w-full text-center text-xs font-sans text-african-sand/60 hover:text-african-gold underline uppercase tracking-widest transition-colors py-2 flex items-center justify-center gap-1.5 cursor-pointer"
-        >
-          <RotateCcw size={13} />
-          <span>Modifier mon inscription</span>
-        </button>
+        {generating ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-10 h-10 border-4 border-african-gold border-t-transparent rounded-full animate-spin" />
+            <p className="text-african-gold text-sm font-sans uppercase tracking-widest">Génération de la carte…</p>
+          </div>
+        ) : cardImageUrl ? (
+          <img
+            src={cardImageUrl}
+            alt="Votre carte d'invitation royale"
+            className="w-full rounded-sm shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-2 border-african-gold"
+            style={{ imageRendering: "auto" }}
+          />
+        ) : (
+          <p className="text-red-400 text-center text-sm">Erreur de génération. Veuillez réessayer.</p>
+        )}
       </motion.div>
+
+      {/* ===== BOUTON TÉLÉCHARGEMENT PRINCIPAL ===== */}
+      {!generating && cardImageUrl && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="w-full max-w-sm flex flex-col gap-4"
+        >
+          {/* iOS : lien direct sur l'image (l'utilisateur appuie puis "Enregistrer l'image") */}
+          {isIOS ? (
+            <a
+              href={cardImageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.2em] text-sm rounded-sm shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 text-center"
+            >
+              <Download size={20} />
+              <span>Appuyer pour télécharger</span>
+            </a>
+          ) : (
+            <button
+              onClick={handleDownload}
+              className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.2em] text-sm rounded-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
+            >
+              <Download size={20} />
+              <span>Télécharger ma Carte</span>
+            </button>
+          )}
+
+          {/* Instruction contextuelle pour iPhone */}
+          {isIOS && (
+            <p className="text-center text-xs text-african-sand/70 font-sans leading-relaxed px-2">
+              📱 Sur iPhone : l&apos;image s&apos;ouvrira dans Safari. <strong className="text-african-gold">Appuyez longuement dessus</strong> puis <strong className="text-african-gold">«&nbsp;Enregistrer dans Photos&nbsp;»</strong>
+            </p>
+          )}
+
+          {/* Séparateur */}
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-african-gold/20" />
+            <span className="text-african-copper/60 text-xs uppercase tracking-widest">ou</span>
+            <div className="h-px flex-1 bg-african-gold/20" />
+          </div>
+
+          {/* Bouton Voir le Pagne */}
+          <a
+            href="#pagne"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("pagne")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="w-full py-4 px-6 bg-[#3E2723] border border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-african-gold hover:text-[#1A0B08] transition-all flex items-center justify-center gap-2.5 cursor-pointer text-center"
+          >
+            <ShoppingBag size={17} />
+            <span>Voir le Pagne Officiel</span>
+          </a>
+
+          {/* Modifier */}
+          <button
+            onClick={onReset}
+            className="w-full text-center text-xs font-sans text-african-sand/50 hover:text-african-gold underline uppercase tracking-widest transition-colors py-2 flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <RotateCcw size={13} />
+            <span>Modifier mon inscription</span>
+          </button>
+        </motion.div>
+      )}
     </div>
   );
 }
