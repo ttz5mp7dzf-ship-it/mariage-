@@ -11,7 +11,7 @@ export default function GalerieRoyale() {
   const photos = [
     { src: "/ouverture.jpg", title: "La Royauté", desc: "Vêtus des parures de la cour royale", position: "object-top" },
     { src: "/couple.jpg", title: "L'Alliance Dorée", desc: "Deux âmes unies sous l'or et le pagne", position: "object-center" },
-    { src: "/ouverture.jpg", title: "Le Royaume", desc: "Ensemble pour l'éternité", position: "object-center" },
+    { src: "/couple2.jpg", title: "Le Kente Royal", desc: "Élisée & Lydia resplendissants dans leurs pagnes", position: "object-top" },
   ];
 
   return (
