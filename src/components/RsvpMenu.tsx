@@ -66,139 +66,288 @@ const giftCategories: Record<string, string[]> = {
 };
 
 // ============================
-// GÉNÉRATION CARTE — BLOB URL (compatible TOUS navigateurs + Safari iOS 15+)
+// GÉNÉRATION HAUTE DÉFINITION CARTE ROYALE (Zéro compression / format naturel)
 // ============================
 async function generateCardBlob(data: FormData): Promise<string> {
   const canvas = document.createElement("canvas");
-  canvas.width = 900;
-  canvas.height = 1300;
+  // Format Haute Définition (1200 x 1800 - ratio 2:3 officiel)
+  canvas.width = 1200;
+  canvas.height = 1800;
   const ctx = canvas.getContext("2d")!;
 
-  // Fond sombre
-  ctx.fillStyle = "#1A0B08";
+  // 1. Fond noble terre sombre
+  ctx.fillStyle = "#160907";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Motif géométrique filigrane
+  // 2. Motif géométrique subtil en filigrane
   ctx.save();
-  ctx.globalAlpha = 0.07;
-  ctx.fillStyle = "#CD7F32";
-  for (let x = 0; x < canvas.width; x += 60) {
-    for (let y = 0; y < canvas.height; y += 60) {
+  ctx.globalAlpha = 0.05;
+  ctx.fillStyle = "#D4AF37";
+  for (let x = 0; x < canvas.width; x += 80) {
+    for (let y = 0; y < canvas.height; y += 80) {
       ctx.save();
-      ctx.translate(x + 30, y + 30);
+      ctx.translate(x + 40, y + 40);
       ctx.rotate(Math.PI / 4);
-      ctx.fillRect(-10, -10, 20, 20);
+      ctx.fillRect(-15, -15, 30, 30);
       ctx.restore();
     }
   }
   ctx.restore();
 
-  // Bordures or + cuivre
-  ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 6;
-  ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
-  ctx.strokeStyle = "#CD7F32"; ctx.lineWidth = 2;
+  // 3. Cadres royaux dorés
+  // Bordure extérieure or massif
+  ctx.strokeStyle = "#D4AF37";
+  ctx.lineWidth = 8;
   ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
 
-  // Losanges coins
-  const drawDiamond = (cx: number, cy: number) => {
-    ctx.save(); ctx.fillStyle = "#D4AF37";
-    ctx.translate(cx, cy); ctx.rotate(Math.PI / 4);
-    ctx.fillRect(-14, -14, 28, 28); ctx.restore();
+  // Bordure intérieure cuivre fin
+  ctx.strokeStyle = "#CD7F32";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+  // Losanges dorés aux 4 coins
+  const drawCornerDiamond = (cx: number, cy: number) => {
+    ctx.save();
+    ctx.fillStyle = "#D4AF37";
+    ctx.translate(cx, cy);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-18, -18, 36, 36);
+    ctx.restore();
   };
-  drawDiamond(12, 12); drawDiamond(canvas.width - 12, 12);
-  drawDiamond(12, canvas.height - 12); drawDiamond(canvas.width - 12, canvas.height - 12);
+  drawCornerDiamond(24, 24);
+  drawCornerDiamond(canvas.width - 24, 24);
+  drawCornerDiamond(24, canvas.height - 24);
+  drawCornerDiamond(canvas.width - 24, canvas.height - 24);
 
-  // En-tête
-  ctx.fillStyle = "#CD7F32"; ctx.font = "bold 22px sans-serif";
+  // 4. En-tête : "INVITATION OFFICIELLE"
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 26px Georgia, serif";
   ctx.textAlign = "center";
-  ctx.fillText("✦  INVITATION ROYALE  ✦", canvas.width / 2, 90);
-  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 44px Georgia, serif";
-  ctx.fillText("La Cour Royale", canvas.width / 2, 148);
+  ctx.fillText("✦  INVITATION OFFICIELLE  ✦", canvas.width / 2, 110);
 
-  // Ligne séparatrice
-  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.4; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(80, 168); ctx.lineTo(820, 168); ctx.stroke();
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 52px Georgia, serif";
+  ctx.fillText("LA COUR ROYALE", canvas.width / 2, 175);
+
+  // Ligne de séparation dorée
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.5;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(120, 200);
+  ctx.lineTo(canvas.width - 120, 200);
+  ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Photo des mariés
+  // 5. Photo des Mariés en Arche Royale (SANS COMPRESSION NI ÉTIREMENT)
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = document.createElement("img") as HTMLImageElement;
-      i.crossOrigin = "anonymous"; i.onload = () => resolve(i); i.onerror = reject;
+      i.crossOrigin = "anonymous";
+      i.onload = () => resolve(i);
+      i.onerror = reject;
       i.src = "/ouverture.jpg";
     });
-    const px = 330, py = 188, pw = 240, ph = 320, r = pw / 2;
-    ctx.save(); ctx.beginPath();
+
+    const px = (canvas.width - 440) / 2; // centré
+    const py = 230;
+    const pw = 440;
+    const ph = 460;
+    const r = pw / 2; // rayon du dôme supérieur
+
+    ctx.save();
+    // Découpe en arche royale (dôme arrondi en haut, base rectangulaire)
+    ctx.beginPath();
     ctx.arc(px + r, py + r, r, Math.PI, 0);
-    ctx.lineTo(px + pw, py + ph); ctx.lineTo(px, py + ph); ctx.closePath(); ctx.clip();
-    ctx.drawImage(img, px, py, pw, ph); ctx.restore();
-    ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 4; ctx.beginPath();
-    ctx.arc(px + r, py + r, r + 2, Math.PI, 0);
-    ctx.lineTo(px + pw + 2, py + ph); ctx.lineTo(px - 2, py + ph); ctx.closePath(); ctx.stroke();
-  } catch { /* continuer sans photo */ }
+    ctx.lineTo(px + pw, py + ph);
+    ctx.lineTo(px, py + ph);
+    ctx.closePath();
+    ctx.clip();
 
-  // Noms
-  ctx.fillStyle = "#FDFBF7"; ctx.font = "bold 56px Georgia, serif"; ctx.textAlign = "center";
-  ctx.fillText("Élisée & Lydia", canvas.width / 2, 570);
-  ctx.fillStyle = "#CD7F32"; ctx.font = "18px sans-serif";
-  ctx.fillText("Uniront leurs destinées devant Dieu et les Hommes", canvas.width / 2, 605);
+    // Rendu en mode "OBJECT-COVER" pour préserver 100% les proportions du visage
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const targetRatio = pw / ph;
+    let sx = 0, sy = 0, sWidth = img.naturalWidth, sHeight = img.naturalHeight;
 
-  // Séparateur losanges
-  for (let i = 0; i < 5; i++) {
-    ctx.save(); ctx.fillStyle = "#CD7F32";
-    ctx.translate(canvas.width / 2 + (i - 2) * 26, 630);
-    ctx.rotate(Math.PI / 4); ctx.fillRect(-5, -5, 10, 10); ctx.restore();
+    if (imgRatio > targetRatio) {
+      sWidth = img.naturalHeight * targetRatio;
+      sx = (img.naturalWidth - sWidth) / 2;
+    } else {
+      sHeight = img.naturalWidth / targetRatio;
+      sy = 0; // ancré en haut pour ne jamais couper les visages
+    }
+
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, px, py, pw, ph);
+    ctx.restore();
+
+    // Cadre doré autour de l'arche
+    ctx.strokeStyle = "#D4AF37";
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(px + r, py + r, r + 3, Math.PI, 0);
+    ctx.lineTo(px + pw + 3, py + ph);
+    ctx.lineTo(px - 3, py + ph);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Ornement losange au sommet de l'arche
+    ctx.save();
+    ctx.fillStyle = "#D4AF37";
+    ctx.translate(canvas.width / 2, py - 4);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-12, -12, 24, 24);
+    ctx.restore();
+  } catch {
+    // Si l'image ne charge pas, continuer sans crash
   }
 
-  // Bloc invité
-  ctx.fillStyle = "#2A1610"; ctx.fillRect(60, 655, canvas.width - 120, 250);
-  ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.5;
-  ctx.strokeRect(60, 655, canvas.width - 120, 250); ctx.globalAlpha = 1;
-  ctx.fillStyle = "#CD7F32"; ctx.font = "bold 16px sans-serif";
-  ctx.fillText("INVITÉ(E) D'HONNEUR", canvas.width / 2, 688);
-  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 46px Georgia, serif";
-  ctx.fillText(data.name.toUpperCase(), canvas.width / 2, 742);
+  // 6. Noms des mariés
+  ctx.fillStyle = "#FDFBF7";
+  ctx.font = "bold 68px Georgia, serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Élisée & Lydia", canvas.width / 2, 765);
 
-  // Présence
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "24px sans-serif";
+  ctx.fillText("Uniront leurs destinées devant Dieu et les Hommes", canvas.width / 2, 810);
+
+  // Séparateur losanges décoratifs
+  for (let i = 0; i < 5; i++) {
+    ctx.save();
+    ctx.fillStyle = "#D4AF37";
+    ctx.translate(canvas.width / 2 + (i - 2) * 36, 845);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-7, -7, 14, 14);
+    ctx.restore();
+  }
+
+  // 7. Bloc Invité d'Honneur (Mise en page royale aérée)
+  const boxX = 90;
+  const boxY = 880;
+  const boxW = canvas.width - 180;
+  const boxH = 430;
+
+  ctx.fillStyle = "#220F0B";
+  ctx.fillRect(boxX, boxY, boxW, boxH);
+
+  ctx.strokeStyle = "#D4AF37";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+  // Coins du bloc invité
+  const drawBoxCorner = (bx: number, by: number) => {
+    ctx.save();
+    ctx.fillStyle = "#CD7F32";
+    ctx.translate(bx, by);
+    ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-8, -8, 16, 16);
+    ctx.restore();
+  };
+  drawBoxCorner(boxX, boxY);
+  drawBoxCorner(boxX + boxW, boxY);
+  drawBoxCorner(boxX, boxY + boxH);
+  drawBoxCorner(boxX + boxW, boxY + boxH);
+
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 22px sans-serif";
+  ctx.fillText("INVITÉ(E) D'HONNEUR", canvas.width / 2, boxY + 50);
+
+  // Nom de l'invité
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 52px Georgia, serif";
+  const guestName = data.name.length > 25 ? data.name.substring(0, 25) + "..." : data.name;
+  ctx.fillText(guestName.toUpperCase(), canvas.width / 2, boxY + 120);
+
+  // Statut présence
   const presenceText = data.present === "oui"
-    ? `✓  Présence confirmée — ${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""}`
-    : data.present === "non" ? "✗  Absent(e) de cœur" : "?  Présence à confirmer";
+    ? `✓  Présence confirmée (${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""})`
+    : data.present === "non"
+    ? "✗  Absent(e) de cœur"
+    : "Présence à confirmer";
   ctx.fillStyle = data.present === "oui" ? "#86efac" : "#CD7F32";
-  ctx.font = "18px sans-serif"; ctx.fillText(presenceText, canvas.width / 2, 778);
+  ctx.font = "bold 26px sans-serif";
+  ctx.fillText(presenceText, canvas.width / 2, boxY + 175);
 
-  // Menu
+  // Ligne de séparation dans le bloc
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.25;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(boxX + 40, boxY + 205);
+  ctx.lineTo(boxX + boxW - 40, boxY + 205);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Choix du Menu
   if (data.present === "oui" && data.mainDish) {
-    ctx.fillStyle = "#CD7F32"; ctx.font = "bold 14px sans-serif";
-    ctx.fillText("MENU SÉLECTIONNÉ", canvas.width / 2, 812);
-    ctx.fillStyle = "#FDFBF7"; ctx.font = "20px sans-serif";
-    ctx.fillText(data.mainDish, canvas.width / 2, 840);
+    ctx.fillStyle = "#CD7F32";
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText("MENU GASTRONOMIQUE SÉLECTIONNÉ", canvas.width / 2, boxY + 245);
+
+    ctx.fillStyle = "#FDFBF7";
+    ctx.font = "bold 28px sans-serif";
+    ctx.fillText(data.mainDish, canvas.width / 2, boxY + 285);
+
     if (data.sideDish) {
-      ctx.globalAlpha = 0.65; ctx.font = "17px sans-serif";
-      ctx.fillText(data.sideDish, canvas.width / 2, 866); ctx.globalAlpha = 1;
+      ctx.fillStyle = "#E2D9D2";
+      ctx.font = "22px sans-serif";
+      ctx.fillText(`Accompagnement : ${data.sideDish}`, canvas.width / 2, boxY + 325);
     }
   }
 
-  // Détails mariage
-  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(80, 935); ctx.lineTo(820, 935); ctx.stroke();
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 18px sans-serif";
-  ctx.fillText("Samedi 10 Octobre 2026  •  12h00  •  Sweetlife Garden, Bounoumin", canvas.width / 2, 975);
+  // Offrande si choisie
+  const giftDisplay =
+    data.giftCategory === "Don en numéraire"
+      ? "Don en numéraire"
+      : data.giftCategory === "Je n'ai pas de cadeau" || !data.giftCategory
+      ? null
+      : data.giftSubCategory?.startsWith("Autre")
+      ? `${data.giftCategory} — ${data.giftCustom}`
+      : data.giftSubCategory
+      ? `${data.giftCategory} — ${data.giftSubCategory}`
+      : data.giftCategory;
 
-  // Sceau
-  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(80, 1010); ctx.lineTo(820, 1010); ctx.stroke();
-  ctx.globalAlpha = 0.75; ctx.fillStyle = "#CD7F32"; ctx.font = "bold 14px sans-serif";
-  ctx.textAlign = "left"; ctx.fillText("SCEAU ROYAL AUTHENTIQUE", 80, 1050);
-  ctx.textAlign = "right"; ctx.fillText("ÉLISÉE & LYDIA 2026", 820, 1050);
+  if (giftDisplay) {
+    ctx.fillStyle = "#D4AF37";
+    ctx.font = "22px sans-serif";
+    ctx.fillText(`Offrande : ${giftDisplay}`, canvas.width / 2, boxY + 380);
+  }
+
+  // 8. Détails pratiques de la cérémonie
+  const detY = 1380;
+  ctx.fillStyle = "#FDFBF7";
+  ctx.font = "bold 26px sans-serif";
+  ctx.fillText("📅  Samedi 10 Octobre 2026   •   🕛  12h00 Précises", canvas.width / 2, detY);
+
+  ctx.fillStyle = "#D4AF37";
+  ctx.font = "bold 28px Georgia, serif";
+  ctx.fillText("📍  Sweetlife Garden, BOUNOUMIN", canvas.width / 2, detY + 50);
+
+  // 9. Ligne de clôture et Sceau royal
+  const sealY = 1520;
+  ctx.strokeStyle = "#D4AF37";
+  ctx.globalAlpha = 0.4;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(100, sealY);
+  ctx.lineTo(canvas.width - 100, sealY);
+  ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // ✅ Retourner un BLOB URL (fonctionne avec l'attribut download sur iOS 15+)
+  ctx.fillStyle = "#CD7F32";
+  ctx.font = "bold 20px sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("✦ SCEAU ROYAL AUTHENTIQUE", 100, sealY + 55);
+
+  ctx.textAlign = "right";
+  ctx.fillText("ÉLISÉE & LYDIA 2026 ✦", canvas.width - 100, sealY + 55);
+
+  // ✅ Retourner un BLOB URL propre
   return new Promise<string>((resolve) => {
     canvas.toBlob((blob) => {
       if (blob) resolve(URL.createObjectURL(blob));
-      else resolve(canvas.toDataURL("image/png")); // fallback
-    }, "image/png");
+      else resolve(canvas.toDataURL("image/png"));
+    }, "image/png", 1.0);
   });
 }
 
@@ -214,108 +363,121 @@ function RoyalInvitationCard({
 }) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(true);
-  const filename = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
+  const filename = `invitation-royale-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
 
   // Générer le blob immédiatement au montage
   useEffect(() => {
     generateCardBlob(data)
-      .then((url) => { setBlobUrl(url); setGenerating(false); })
+      .then((url) => {
+        setBlobUrl(url);
+        setGenerating(false);
+      })
       .catch(() => setGenerating(false));
   }, [data]);
 
   // Libérer la mémoire à la destruction
   useEffect(() => {
-    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl); };
+    return () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
   }, [blobUrl]);
 
   return (
     <div className="w-full flex flex-col items-center gap-6 py-8 px-4">
 
-      {/* Badge */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-400/10 border border-green-400/40 text-green-400 text-xs uppercase tracking-[0.25em] font-bold mb-3">
-          <CheckCircle size={15} /> Inscription confirmée 🎉
+      {/* En-tête de confirmation */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-xl">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-400/15 border border-green-400/40 text-green-400 text-xs uppercase tracking-[0.25em] font-bold mb-3 shadow-lg">
+          <CheckCircle size={15} /> Inscription Confirmée avec Succès 🎉
         </div>
-        <h3 className="text-3xl sm:text-4xl font-heading text-african-ivory mb-1">Votre Carte Royale 👑</h3>
-        <p className="text-african-sand/70 font-sans text-sm">
-          {generating ? "Génération de votre invitation…" : "Votre invitation est prête — appuyez ci-dessous pour la télécharger"}
+        <h3 className="text-3xl sm:text-5xl font-heading text-african-ivory mb-2">
+          Votre Carte d&apos;Invitation Royale 👑
+        </h3>
+        <p className="text-african-sand/80 font-sans text-sm sm:text-base leading-relaxed">
+          {generating
+            ? "Génération de votre carte officielle en haute définition..."
+            : "Votre carte officielle est prête ci-dessous. Téléchargez-la puis découvrez le pagne officiel de la fête !"}
         </p>
       </motion.div>
 
-      {/* Spinner de génération ou Carte preview */}
+      {/* Aperçu de la Carte en Haute Résolution (naturel, sans compression d'aspect) */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-xs"
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-sm sm:max-w-md"
       >
         {generating ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-12 h-12 border-4 border-african-gold border-t-transparent rounded-full animate-spin" />
-            <p className="text-african-gold text-sm font-sans uppercase tracking-widest animate-pulse">Génération de la carte…</p>
+          <div className="flex flex-col items-center justify-center py-28 gap-4 bg-[#2A1610]/80 border-2 border-african-gold/50 rounded-sm">
+            <div className="w-14 h-14 border-4 border-african-gold border-t-transparent rounded-full animate-spin" />
+            <p className="text-african-gold text-sm font-sans uppercase tracking-widest animate-pulse">
+              Génération Haute Définition...
+            </p>
           </div>
         ) : blobUrl ? (
-          <img
-            src={blobUrl}
-            alt="Votre carte d'invitation royale"
-            className="w-full shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-african-gold"
-          />
+          <div className="relative group">
+            <img
+              src={blobUrl}
+              alt="Votre carte d'invitation royale"
+              className="w-full h-auto object-contain rounded-sm shadow-[0_25px_70px_rgba(0,0,0,0.95)] border-4 border-african-gold"
+            />
+          </div>
         ) : (
-          <p className="text-red-400 text-center py-8">Erreur. Veuillez recharger la page.</p>
+          <p className="text-red-400 text-center py-8">Erreur de chargement. Veuillez recharger la page.</p>
         )}
       </motion.div>
 
-      {/* BOUTON DE TÉLÉCHARGEMENT — fonctionne sur tous les navigateurs */}
+      {/* BOUTONS D'ACTION POST-INSCRIPTION */}
       {!generating && blobUrl && (
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="w-full max-w-xs flex flex-col gap-3"
+          className="w-full max-w-sm sm:max-w-md flex flex-col gap-4"
         >
-          {/* ✅ <a download href={blobUrl}> = fonctionne Chrome/Android/Desktop + iOS Safari 15+ */}
+          {/* BOUTON 1 : TÉLÉCHARGER LA CARTE (Fonctionne 100% sur Chrome, Android, PC, Safari iOS 15+) */}
           <a
             href={blobUrl}
             download={filename}
-            className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.15em] text-sm shadow-2xl active:scale-95 transition-transform flex items-center justify-center gap-3 text-center"
+            className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.2em] text-sm sm:text-base shadow-2xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 text-center rounded-sm cursor-pointer"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
             <Download size={22} />
             <span>Télécharger ma Carte</span>
           </a>
 
-          {/* Indication iPhone */}
-          <p className="text-center text-[11px] text-african-sand/50 font-sans leading-relaxed">
-            📱 iPhone : si rien ne se passe, <span className="text-african-gold">appuyez longuement</span> sur le bouton → <span className="text-african-gold">&quot;Télécharger le fichier lié&quot;</span>
+          {/* Indication utile pour iPhone */}
+          <p className="text-center text-[11px] sm:text-xs text-african-sand/60 font-sans leading-relaxed">
+            📱 Sur iPhone : si besoin, <span className="text-african-gold font-semibold">appuyez longuement</span> sur le bouton → <span className="text-african-gold font-semibold">&quot;Télécharger le fichier lié&quot;</span> ou enregistrez l&apos;image ci-dessus dans vos Photos.
           </p>
 
-          {/* Séparateur */}
+          {/* Séparateur élégant */}
           <div className="flex items-center gap-3 my-1">
-            <div className="h-px flex-1 bg-african-gold/20" />
-            <span className="text-african-copper/50 text-[10px] uppercase tracking-widest">Ensuite</span>
-            <div className="h-px flex-1 bg-african-gold/20" />
+            <div className="h-px flex-1 bg-african-gold/30" />
+            <span className="text-african-gold text-xs uppercase tracking-widest font-bold">Étape suivante</span>
+            <div className="h-px flex-1 bg-african-gold/30" />
           </div>
 
-          {/* Bouton Pagnes — Commander directement */}
+          {/* BOUTON 2 : COMMANDER LE PAGNE OFFICIEL */}
           <a
             href="#pagne"
             onClick={(e) => {
               e.preventDefault();
               document.getElementById("pagne")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="w-full py-4 px-6 bg-[#3E2723] border-2 border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.15em] text-sm active:scale-95 transition-transform flex items-center justify-center gap-3 text-center"
+            className="w-full py-5 px-6 bg-[#2A1610] border-2 border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.18em] text-sm sm:text-base hover:bg-african-gold hover:text-[#1A0B08] active:scale-95 transition-all flex items-center justify-center gap-3 text-center rounded-sm shadow-xl cursor-pointer"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
-            <ShoppingBag size={19} />
+            <ShoppingBag size={20} />
             <span>Commander le Pagne Officiel 👗</span>
           </a>
 
-          {/* Modifier */}
+          {/* Bouton Modifier */}
           <button
             onClick={onReset}
-            className="w-full text-center text-[11px] font-sans text-african-sand/40 hover:text-african-gold underline uppercase tracking-widest transition-colors py-1 flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full text-center text-xs font-sans text-african-sand/50 hover:text-african-gold underline uppercase tracking-widest transition-colors py-2 flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <RotateCcw size={12} />
+            <RotateCcw size={13} />
             <span>Modifier mon inscription</span>
           </button>
         </motion.div>
@@ -345,6 +507,18 @@ export default function RsvpMenu() {
       .then((data) => { if (data.success) setClaimedGifts(data.claimedGifts); })
       .catch(console.error);
   }, []);
+
+  // ✅ Remonter automatiquement jusqu'à la carte d'invitation dès la validation
+  useEffect(() => {
+    if (status === "success") {
+      setTimeout(() => {
+        const el = document.getElementById("rsvp");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 50);
+    }
+  }, [status]);
 
   const onSubmit = async (data: FormData) => {
     setStatus("loading");
