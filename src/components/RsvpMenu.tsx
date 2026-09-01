@@ -66,9 +66,9 @@ const giftCategories: Record<string, string[]> = {
 };
 
 // ============================
-// GÉNÉRATION RAPIDE CARTE EN CANVAS NATIF (sans html2canvas)
+// GÉNÉRATION CARTE — BLOB URL (compatible TOUS navigateurs + Safari iOS 15+)
 // ============================
-async function generateCardCanvas(data: FormData): Promise<string> {
+async function generateCardBlob(data: FormData): Promise<string> {
   const canvas = document.createElement("canvas");
   canvas.width = 900;
   canvas.height = 1300;
@@ -78,7 +78,7 @@ async function generateCardCanvas(data: FormData): Promise<string> {
   ctx.fillStyle = "#1A0B08";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Motif géométrique en filigrane
+  // Motif géométrique filigrane
   ctx.save();
   ctx.globalAlpha = 0.07;
   ctx.fillStyle = "#CD7F32";
@@ -93,182 +93,117 @@ async function generateCardCanvas(data: FormData): Promise<string> {
   }
   ctx.restore();
 
-  // Bordure extérieure or
-  ctx.strokeStyle = "#D4AF37";
-  ctx.lineWidth = 6;
+  // Bordures or + cuivre
+  ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 6;
   ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
-
-  // Bordure intérieure cuivre
-  ctx.strokeStyle = "#CD7F32";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#CD7F32"; ctx.lineWidth = 2;
   ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
 
-  // Losanges dorés aux 4 coins
+  // Losanges coins
   const drawDiamond = (cx: number, cy: number) => {
-    ctx.save();
-    ctx.fillStyle = "#D4AF37";
-    ctx.translate(cx, cy);
-    ctx.rotate(Math.PI / 4);
-    ctx.fillRect(-14, -14, 28, 28);
-    ctx.restore();
+    ctx.save(); ctx.fillStyle = "#D4AF37";
+    ctx.translate(cx, cy); ctx.rotate(Math.PI / 4);
+    ctx.fillRect(-14, -14, 28, 28); ctx.restore();
   };
-  drawDiamond(12, 12);
-  drawDiamond(canvas.width - 12, 12);
-  drawDiamond(12, canvas.height - 12);
-  drawDiamond(canvas.width - 12, canvas.height - 12);
+  drawDiamond(12, 12); drawDiamond(canvas.width - 12, 12);
+  drawDiamond(12, canvas.height - 12); drawDiamond(canvas.width - 12, canvas.height - 12);
 
-  // En-tête : "INVITATION ROYALE"
-  ctx.fillStyle = "#CD7F32";
-  ctx.font = "bold 22px sans-serif";
+  // En-tête
+  ctx.fillStyle = "#CD7F32"; ctx.font = "bold 22px sans-serif";
   ctx.textAlign = "center";
-  ctx.letterSpacing = "8px";
   ctx.fillText("✦  INVITATION ROYALE  ✦", canvas.width / 2, 90);
-
-  ctx.fillStyle = "#D4AF37";
-  ctx.font = "bold 44px Georgia, serif";
+  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 44px Georgia, serif";
   ctx.fillText("La Cour Royale", canvas.width / 2, 148);
 
   // Ligne séparatrice
-  ctx.strokeStyle = "#D4AF37";
-  ctx.globalAlpha = 0.4;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(80, 168); ctx.lineTo(820, 168);
-  ctx.stroke();
+  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.4; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(80, 168); ctx.lineTo(820, 168); ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Photo des mariés (arche royale)
+  // Photo des mariés
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = document.createElement("img") as HTMLImageElement;
-      i.crossOrigin = "anonymous";
-      i.onload = () => resolve(i);
-      i.onerror = reject;
+      i.crossOrigin = "anonymous"; i.onload = () => resolve(i); i.onerror = reject;
       i.src = "/ouverture.jpg";
     });
-    // Clip en arche (rectangle + demi-cercle)
     const px = 330, py = 188, pw = 240, ph = 320, r = pw / 2;
-    ctx.save();
-    ctx.beginPath();
+    ctx.save(); ctx.beginPath();
     ctx.arc(px + r, py + r, r, Math.PI, 0);
-    ctx.lineTo(px + pw, py + ph);
-    ctx.lineTo(px, py + ph);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(img, px, py, pw, ph);
-    ctx.restore();
-
-    // Cadre or sur la photo
-    ctx.strokeStyle = "#D4AF37";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
+    ctx.lineTo(px + pw, py + ph); ctx.lineTo(px, py + ph); ctx.closePath(); ctx.clip();
+    ctx.drawImage(img, px, py, pw, ph); ctx.restore();
+    ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 4; ctx.beginPath();
     ctx.arc(px + r, py + r, r + 2, Math.PI, 0);
-    ctx.lineTo(px + pw + 2, py + ph);
-    ctx.lineTo(px - 2, py + ph);
-    ctx.closePath();
-    ctx.stroke();
-  } catch {
-    // Photo non chargée – continuer sans
-  }
+    ctx.lineTo(px + pw + 2, py + ph); ctx.lineTo(px - 2, py + ph); ctx.closePath(); ctx.stroke();
+  } catch { /* continuer sans photo */ }
 
-  // Noms des mariés
-  ctx.fillStyle = "#FDFBF7";
-  ctx.font = "bold 56px Georgia, serif";
-  ctx.textAlign = "center";
+  // Noms
+  ctx.fillStyle = "#FDFBF7"; ctx.font = "bold 56px Georgia, serif"; ctx.textAlign = "center";
   ctx.fillText("Élisée & Lydia", canvas.width / 2, 570);
-
-  ctx.fillStyle = "#CD7F32";
-  ctx.font = "18px sans-serif";
+  ctx.fillStyle = "#CD7F32"; ctx.font = "18px sans-serif";
   ctx.fillText("Uniront leurs destinées devant Dieu et les Hommes", canvas.width / 2, 605);
 
   // Séparateur losanges
-  ctx.fillStyle = "#CD7F32";
   for (let i = 0; i < 5; i++) {
-    ctx.save();
+    ctx.save(); ctx.fillStyle = "#CD7F32";
     ctx.translate(canvas.width / 2 + (i - 2) * 26, 630);
-    ctx.rotate(Math.PI / 4);
-    ctx.fillRect(-5, -5, 10, 10);
-    ctx.restore();
+    ctx.rotate(Math.PI / 4); ctx.fillRect(-5, -5, 10, 10); ctx.restore();
   }
 
-  // Bloc invité d'honneur
-  ctx.fillStyle = "#2A1610";
-  ctx.fillRect(60, 655, canvas.width - 120, 250);
-  ctx.strokeStyle = "#D4AF37";
-  ctx.lineWidth = 1.5;
-  ctx.globalAlpha = 0.5;
-  ctx.strokeRect(60, 655, canvas.width - 120, 250);
-  ctx.globalAlpha = 1;
-
-  ctx.fillStyle = "#CD7F32";
-  ctx.font = "bold 16px sans-serif";
+  // Bloc invité
+  ctx.fillStyle = "#2A1610"; ctx.fillRect(60, 655, canvas.width - 120, 250);
+  ctx.strokeStyle = "#D4AF37"; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.5;
+  ctx.strokeRect(60, 655, canvas.width - 120, 250); ctx.globalAlpha = 1;
+  ctx.fillStyle = "#CD7F32"; ctx.font = "bold 16px sans-serif";
   ctx.fillText("INVITÉ(E) D'HONNEUR", canvas.width / 2, 688);
-
-  ctx.fillStyle = "#D4AF37";
-  ctx.font = "bold 46px Georgia, serif";
+  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 46px Georgia, serif";
   ctx.fillText(data.name.toUpperCase(), canvas.width / 2, 742);
 
-  // Statut présence
+  // Présence
   const presenceText = data.present === "oui"
     ? `✓  Présence confirmée — ${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""}`
     : data.present === "non" ? "✗  Absent(e) de cœur" : "?  Présence à confirmer";
   ctx.fillStyle = data.present === "oui" ? "#86efac" : "#CD7F32";
-  ctx.font = "18px sans-serif";
-  ctx.fillText(presenceText, canvas.width / 2, 778);
+  ctx.font = "18px sans-serif"; ctx.fillText(presenceText, canvas.width / 2, 778);
 
   // Menu
   if (data.present === "oui" && data.mainDish) {
-    ctx.fillStyle = "#CD7F32";
-    ctx.font = "bold 14px sans-serif";
+    ctx.fillStyle = "#CD7F32"; ctx.font = "bold 14px sans-serif";
     ctx.fillText("MENU SÉLECTIONNÉ", canvas.width / 2, 812);
-    ctx.fillStyle = "#FDFBF7";
-    ctx.font = "20px sans-serif";
+    ctx.fillStyle = "#FDFBF7"; ctx.font = "20px sans-serif";
     ctx.fillText(data.mainDish, canvas.width / 2, 840);
     if (data.sideDish) {
-      ctx.fillStyle = "#FDFBF7";
-      ctx.globalAlpha = 0.65;
-      ctx.font = "17px sans-serif";
-      ctx.fillText(data.sideDish, canvas.width / 2, 866);
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.65; ctx.font = "17px sans-serif";
+      ctx.fillText(data.sideDish, canvas.width / 2, 866); ctx.globalAlpha = 1;
     }
   }
 
-  // Ligne détails
-  ctx.strokeStyle = "#D4AF37";
-  ctx.globalAlpha = 0.3;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(80, 935); ctx.lineTo(820, 935);
-  ctx.stroke();
+  // Détails mariage
+  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(80, 935); ctx.lineTo(820, 935); ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#D4AF37"; ctx.font = "bold 18px sans-serif";
+  ctx.fillText("Samedi 10 Octobre 2026  •  12h00  •  Sweetlife Garden, Bounoumin", canvas.width / 2, 975);
+
+  // Sceau
+  ctx.strokeStyle = "#D4AF37"; ctx.globalAlpha = 0.3; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(80, 1010); ctx.lineTo(820, 1010); ctx.stroke();
+  ctx.globalAlpha = 0.75; ctx.fillStyle = "#CD7F32"; ctx.font = "bold 14px sans-serif";
+  ctx.textAlign = "left"; ctx.fillText("SCEAU ROYAL AUTHENTIQUE", 80, 1050);
+  ctx.textAlign = "right"; ctx.fillText("ÉLISÉE & LYDIA 2026", 820, 1050);
   ctx.globalAlpha = 1;
 
-  // Détails pratiques
-  ctx.fillStyle = "#D4AF37";
-  ctx.font = "bold 16px sans-serif";
-  ctx.fillText("📅  10 Octobre 2026   •   🕛  12h00   •   📍  Sweetlife Garden, Bounoumin", canvas.width / 2, 975);
-
-  // Bas de carte
-  ctx.strokeStyle = "#D4AF37";
-  ctx.globalAlpha = 0.3;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(80, 1010); ctx.lineTo(820, 1010);
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-
-  ctx.fillStyle = "#CD7F32";
-  ctx.font = "bold 14px sans-serif";
-  ctx.globalAlpha = 0.75;
-  ctx.fillText("SCEAU ROYAL AUTHENTIQUE", 200, 1050);
-  ctx.textAlign = "right";
-  ctx.fillText("ÉLISÉE & LYDIA 2026", 730, 1050);
-  ctx.globalAlpha = 1;
-
-  return canvas.toDataURL("image/png");
+  // ✅ Retourner un BLOB URL (fonctionne avec l'attribut download sur iOS 15+)
+  return new Promise<string>((resolve) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(URL.createObjectURL(blob));
+      else resolve(canvas.toDataURL("image/png")); // fallback
+    }, "image/png");
+  });
 }
 
 // ============================
-// CARTE D'INVITATION ROYALE — COMPATIBLE SAFARI iOS
+// CARTE ROYALE — FLOW : Carte → Téléchargement → Pagnes
 // ============================
 function RoyalInvitationCard({
   data,
@@ -277,164 +212,110 @@ function RoyalInvitationCard({
   data: FormData;
   onReset: () => void;
 }) {
-  const [cardImageUrl, setCardImageUrl] = useState<string | null>(null);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(true);
-  const [isIOS, setIsIOS] = useState(false);
+  const filename = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
 
-  const giftDisplay =
-    data.giftCategory === "Don en numéraire"
-      ? "Don en numéraire"
-      : data.giftCategory === "Je n'ai pas de cadeau" || !data.giftCategory
-      ? null
-      : data.giftSubCategory?.startsWith("Autre")
-      ? `${data.giftCategory} — ${data.giftCustom}`
-      : data.giftSubCategory
-      ? `${data.giftCategory} — ${data.giftSubCategory}`
-      : data.giftCategory;
-
-  // Détecter iOS Safari
+  // Générer le blob immédiatement au montage
   useEffect(() => {
-    const ua = navigator.userAgent;
-    const ios = /iPad|iPhone|iPod/.test(ua) && !(window as unknown as Record<string, unknown>).MSStream;
-    setIsIOS(ios);
-  }, []);
-
-  // Générer la carte immédiatement au montage
-  useEffect(() => {
-    setGenerating(true);
-    generateCardCanvas(data)
-      .then((url) => {
-        setCardImageUrl(url);
-        setGenerating(false);
-      })
-      .catch((e) => {
-        console.error("Erreur génération carte:", e);
-        setGenerating(false);
-      });
+    generateCardBlob(data)
+      .then((url) => { setBlobUrl(url); setGenerating(false); })
+      .catch(() => setGenerating(false));
   }, [data]);
 
-  const handleDownload = () => {
-    if (!cardImageUrl) return;
-    if (isIOS) {
-      // iOS Safari : ouvrir l'image dans un nouvel onglet pour permettre "Enregistrer l'image"
-      window.open(cardImageUrl, "_blank");
-    } else {
-      // Desktop / Android : téléchargement direct
-      const link = document.createElement("a");
-      link.download = `invitation-${data.name.replace(/\s+/g, "-").toLowerCase()}.png`;
-      link.href = cardImageUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
+  // Libérer la mémoire à la destruction
+  useEffect(() => {
+    return () => { if (blobUrl) URL.revokeObjectURL(blobUrl); };
+  }, [blobUrl]);
 
   return (
-    <div className="w-full flex flex-col items-center gap-8 py-6 px-4">
+    <div className="w-full flex flex-col items-center gap-6 py-8 px-4">
 
-      {/* Badge confirmation */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center max-w-2xl"
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-african-gold/15 border border-african-gold/40 text-african-gold text-xs uppercase tracking-[0.25em] font-bold mb-4">
-          <ShieldCheck size={16} /> Inscription Officielle Enregistrée
+      {/* Badge */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-400/10 border border-green-400/40 text-green-400 text-xs uppercase tracking-[0.25em] font-bold mb-3">
+          <CheckCircle size={15} /> Inscription confirmée 🎉
         </div>
-        <h3 className="text-3xl sm:text-4xl font-heading text-african-ivory mb-2">
-          Votre Carte Royale 👑
-        </h3>
-        <p className="text-african-sand/80 font-sans text-sm leading-relaxed">
-          Votre invitation personnalisée est prête. Appuyez sur le bouton ci-dessous pour la télécharger.
+        <h3 className="text-3xl sm:text-4xl font-heading text-african-ivory mb-1">Votre Carte Royale 👑</h3>
+        <p className="text-african-sand/70 font-sans text-sm">
+          {generating ? "Génération de votre invitation…" : "Votre invitation est prête — appuyez ci-dessous pour la télécharger"}
         </p>
       </motion.div>
 
-      {/* ===== CARTE GÉNÉRÉE EN IMAGE (affiché instantanément) ===== */}
+      {/* Spinner de génération ou Carte preview */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-sm"
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-xs"
       >
         {generating ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div className="w-10 h-10 border-4 border-african-gold border-t-transparent rounded-full animate-spin" />
-            <p className="text-african-gold text-sm font-sans uppercase tracking-widest">Génération de la carte…</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-12 h-12 border-4 border-african-gold border-t-transparent rounded-full animate-spin" />
+            <p className="text-african-gold text-sm font-sans uppercase tracking-widest animate-pulse">Génération de la carte…</p>
           </div>
-        ) : cardImageUrl ? (
+        ) : blobUrl ? (
           <img
-            src={cardImageUrl}
+            src={blobUrl}
             alt="Votre carte d'invitation royale"
-            className="w-full rounded-sm shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-2 border-african-gold"
-            style={{ imageRendering: "auto" }}
+            className="w-full shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-african-gold"
           />
         ) : (
-          <p className="text-red-400 text-center text-sm">Erreur de génération. Veuillez réessayer.</p>
+          <p className="text-red-400 text-center py-8">Erreur. Veuillez recharger la page.</p>
         )}
       </motion.div>
 
-      {/* ===== BOUTON TÉLÉCHARGEMENT PRINCIPAL ===== */}
-      {!generating && cardImageUrl && (
+      {/* BOUTON DE TÉLÉCHARGEMENT — fonctionne sur tous les navigateurs */}
+      {!generating && blobUrl && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="w-full max-w-sm flex flex-col gap-4"
+          transition={{ delay: 0.2 }}
+          className="w-full max-w-xs flex flex-col gap-3"
         >
-          {/* iOS : lien direct sur l'image (l'utilisateur appuie puis "Enregistrer l'image") */}
-          {isIOS ? (
-            <a
-              href={cardImageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.2em] text-sm rounded-sm shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 text-center"
-            >
-              <Download size={20} />
-              <span>Appuyer pour télécharger</span>
-            </a>
-          ) : (
-            <button
-              onClick={handleDownload}
-              className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.2em] text-sm rounded-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
-            >
-              <Download size={20} />
-              <span>Télécharger ma Carte</span>
-            </button>
-          )}
+          {/* ✅ <a download href={blobUrl}> = fonctionne Chrome/Android/Desktop + iOS Safari 15+ */}
+          <a
+            href={blobUrl}
+            download={filename}
+            className="w-full py-5 px-6 bg-gradient-to-r from-african-terra via-african-gold to-african-bronze text-[#1A0B08] font-sans font-black uppercase tracking-[0.15em] text-sm shadow-2xl active:scale-95 transition-transform flex items-center justify-center gap-3 text-center"
+            style={{ WebkitTapHighlightColor: "transparent" }}
+          >
+            <Download size={22} />
+            <span>Télécharger ma Carte</span>
+          </a>
 
-          {/* Instruction contextuelle pour iPhone */}
-          {isIOS && (
-            <p className="text-center text-xs text-african-sand/70 font-sans leading-relaxed px-2">
-              📱 Sur iPhone : l&apos;image s&apos;ouvrira dans Safari. <strong className="text-african-gold">Appuyez longuement dessus</strong> puis <strong className="text-african-gold">«&nbsp;Enregistrer dans Photos&nbsp;»</strong>
-            </p>
-          )}
+          {/* Indication iPhone */}
+          <p className="text-center text-[11px] text-african-sand/50 font-sans leading-relaxed">
+            📱 iPhone : si rien ne se passe, <span className="text-african-gold">appuyez longuement</span> sur le bouton → <span className="text-african-gold">&quot;Télécharger le fichier lié&quot;</span>
+          </p>
 
           {/* Séparateur */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 my-1">
             <div className="h-px flex-1 bg-african-gold/20" />
-            <span className="text-african-copper/60 text-xs uppercase tracking-widest">ou</span>
+            <span className="text-african-copper/50 text-[10px] uppercase tracking-widest">Ensuite</span>
             <div className="h-px flex-1 bg-african-gold/20" />
           </div>
 
-          {/* Bouton Voir le Pagne */}
+          {/* Bouton Pagnes — Commander directement */}
           <a
             href="#pagne"
             onClick={(e) => {
               e.preventDefault();
               document.getElementById("pagne")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="w-full py-4 px-6 bg-[#3E2723] border border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.2em] text-xs rounded-sm hover:bg-african-gold hover:text-[#1A0B08] transition-all flex items-center justify-center gap-2.5 cursor-pointer text-center"
+            className="w-full py-4 px-6 bg-[#3E2723] border-2 border-african-gold text-african-gold font-sans font-bold uppercase tracking-[0.15em] text-sm active:scale-95 transition-transform flex items-center justify-center gap-3 text-center"
+            style={{ WebkitTapHighlightColor: "transparent" }}
           >
-            <ShoppingBag size={17} />
-            <span>Voir le Pagne Officiel</span>
+            <ShoppingBag size={19} />
+            <span>Commander le Pagne Officiel 👗</span>
           </a>
 
           {/* Modifier */}
           <button
             onClick={onReset}
-            className="w-full text-center text-xs font-sans text-african-sand/50 hover:text-african-gold underline uppercase tracking-widest transition-colors py-2 flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full text-center text-[11px] font-sans text-african-sand/40 hover:text-african-gold underline uppercase tracking-widest transition-colors py-1 flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <RotateCcw size={13} />
+            <RotateCcw size={12} />
             <span>Modifier mon inscription</span>
           </button>
         </motion.div>
