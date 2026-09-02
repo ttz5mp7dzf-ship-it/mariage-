@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UtensilsCrossed, Users, Download, Sparkles, ShoppingBag, RotateCcw, MapPin, Calendar, Clock, Heart, CheckCircle, ShieldCheck } from "lucide-react";
 import Image from "next/image";
+import QRCode from "qrcode";
 
 type FormData = {
   name: string;
@@ -70,9 +71,9 @@ const giftCategories: Record<string, string[]> = {
 // ============================
 async function generateCardBlob(data: FormData): Promise<string> {
   const canvas = document.createElement("canvas");
-  // Format Haute Définition (1200 x 1800 - ratio 2:3 officiel)
+  // Format Haute Définition (1200 x 2000 - ratio 3:5 avec QR code)
   canvas.width = 1200;
-  canvas.height = 1800;
+  canvas.height = 2000;
   const ctx = canvas.getContext("2d")!;
 
   // 1. Fond noble terre sombre
@@ -278,11 +279,11 @@ async function generateCardBlob(data: FormData): Promise<string> {
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Choix du Menu
+  // Menu choisi
   if (data.present === "oui" && data.mainDish) {
     ctx.fillStyle = "#CD7F32";
     ctx.font = "bold 20px sans-serif";
-    ctx.fillText("MENU GASTRONOMIQUE SÉLECTIONNÉ", canvas.width / 2, boxY + 245);
+    ctx.fillText("MENU GASTRONOMIQUE", canvas.width / 2, boxY + 245);
 
     ctx.fillStyle = "#FDFBF7";
     ctx.font = "bold 28px sans-serif";
@@ -293,38 +294,79 @@ async function generateCardBlob(data: FormData): Promise<string> {
       ctx.font = "22px sans-serif";
       ctx.fillText(`Accompagnement : ${data.sideDish}`, canvas.width / 2, boxY + 325);
     }
+
+    ctx.fillStyle = "#CD7F32";
+    ctx.globalAlpha = 0.7;
+    ctx.font = "italic 20px Georgia, serif";
+    ctx.fillText("D'autres plats vous attendent sur place !", canvas.width / 2, boxY + 370);
+    ctx.globalAlpha = 1;
   }
 
-  // Offrande si choisie
-  const giftDisplay =
-    data.giftCategory === "Don en numéraire"
-      ? "Don en numéraire"
-      : data.giftCategory === "Je n'ai pas de cadeau" || !data.giftCategory
-      ? null
-      : data.giftSubCategory?.startsWith("Autre")
-      ? `${data.giftCategory} — ${data.giftCustom}`
-      : data.giftSubCategory
-      ? `${data.giftCategory} — ${data.giftSubCategory}`
-      : data.giftCategory;
+  // Note: gift/offrande NOT displayed on card (confidential)
 
-  if (giftDisplay) {
-    ctx.fillStyle = "#D4AF37";
-    ctx.font = "22px sans-serif";
-    ctx.fillText(`Offrande : ${giftDisplay}`, canvas.width / 2, boxY + 380);
+  // 8. QR CODE UNIQUE — Anti-transfert
+  // Hash unique basé sur nom + téléphone pour rendre l'invitation personnelle
+  const qrPayload = JSON.stringify({
+    n: data.name,
+    t: data.phone,
+    d: "2026-10-10",
+    h: btoa(`${data.name}|${data.phone}|EL2026`).slice(0, 16),
+  });
+
+  try {
+    const qrDataUrl = await QRCode.toDataURL(qrPayload, {
+      errorCorrectionLevel: "H",
+      margin: 1,
+      width: 200,
+      color: { dark: "#D4AF37", light: "#160907" },
+    });
+
+    const qrImg = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = document.createElement("img") as HTMLImageElement;
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = qrDataUrl;
+    });
+
+    // Cadre doré autour du QR
+    const qrSize = 160;
+    const qrX = (canvas.width - qrSize) / 2;
+    const qrY = boxY + boxH + 30;
+
+    ctx.strokeStyle = "#D4AF37";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(qrX - 8, qrY - 8, qrSize + 16, qrSize + 16);
+
+    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+    // Label sous le QR
+    ctx.fillStyle = "#CD7F32";
+    ctx.font = "bold 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("INVITATION PERSONNELLE & CONFIDENTIELLE", canvas.width / 2, qrY + qrSize + 30);
+
+    ctx.fillStyle = "#FDFBF7";
+    ctx.globalAlpha = 0.5;
+    ctx.font = "14px sans-serif";
+    ctx.fillText("Ce QR code est unique et non transférable", canvas.width / 2, qrY + qrSize + 52);
+    ctx.globalAlpha = 1;
+  } catch {
+    // QR code en erreur — continuer sans
   }
 
-  // 8. Détails pratiques de la cérémonie
-  const detY = 1380;
+  // 9. Détails pratiques de la cérémonie
+  const detY = 1560;
   ctx.fillStyle = "#FDFBF7";
   ctx.font = "bold 26px sans-serif";
+  ctx.textAlign = "center";
   ctx.fillText("📅  Samedi 10 Octobre 2026   •   🕛  12h00 Précises", canvas.width / 2, detY);
 
   ctx.fillStyle = "#D4AF37";
   ctx.font = "bold 28px Georgia, serif";
   ctx.fillText("📍  Sweetlife Garden, BOUNOUMIN", canvas.width / 2, detY + 50);
 
-  // 9. Ligne de clôture et Sceau royal
-  const sealY = 1520;
+  // 10. Ligne de clôture et Sceau royal
+  const sealY = 1690;
   ctx.strokeStyle = "#D4AF37";
   ctx.globalAlpha = 0.4;
   ctx.lineWidth = 1.5;
@@ -669,7 +711,7 @@ export default function RsvpMenu() {
                 <div className="text-center mb-16">
                   <UtensilsCrossed size={40} className="mx-auto text-african-gold mb-6" />
                   <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Menu Gastronomique</h4>
-                  <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-copper">Veuillez choisir votre met royal</p>
+                  <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-copper">Choisissez vos 2 mets préférés — d'autres plats vous attendent sur place</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -772,6 +814,23 @@ export default function RsvpMenu() {
                         >
                           <p className="text-african-ivory/90 font-sans text-sm leading-relaxed">
                             Votre présence et votre bienveillance sont les plus précieux des trésors. 🙏
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Message de remerciement quand un cadeau est choisi */}
+                    <AnimatePresence>
+                      {giftCategory && giftCategory !== "Je n'ai pas de cadeau" && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className="mt-8 p-5 border border-african-gold/40 bg-african-gold/5 text-center rounded-sm"
+                        >
+                          <Heart size={24} className="mx-auto text-african-gold mb-2" />
+                          <p className="text-african-gold font-heading text-2xl mb-1">Merci 🙏</p>
+                          <p className="text-african-sand/80 font-sans text-xs leading-relaxed">
+                            Votre générosité nous touche profondément. Merci du fond du cœur pour cette belle attention.
                           </p>
                         </motion.div>
                       )}
