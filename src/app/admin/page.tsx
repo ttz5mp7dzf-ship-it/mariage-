@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, CheckCircle, XCircle, Gift, UtensilsCrossed,
   Lock, Eye, EyeOff, Download, RefreshCw, Crown,
+  KeyRound, Plus, Copy, Check, MessageSquareShare, Sparkles,
 } from "lucide-react";
 
 type Rsvp = {
@@ -19,11 +20,21 @@ type Rsvp = {
   createdAt: string;
 };
 
+type GuestCode = {
+  id: string;
+  code: string;
+  name: string;
+  maxGuests: number;
+  used: boolean;
+  createdAt: string;
+};
+
 type AdminData = {
   stats: { total: number; present: number; absent: number; totalGuests: number };
   menuStats: Record<string, number>;
   gifts: string[];
   rsvps: Rsvp[];
+  codes?: GuestCode[];
 };
 
 // ===== ÉCRAN DE CONNEXION =====
@@ -90,7 +101,7 @@ function LoginScreen({ onLogin, error }: { onLogin: (pwd: string) => void; error
               {error && <p className="text-red-400 text-xs mt-2 font-sans">Mot de passe incorrect. Réessayez.</p>}
             </div>
             <button type="submit" className="w-full group relative mt-2">
-              <div className="relative bg-[#3E2723] border border-[#D4AF37]/50 py-4 text-[#D4AF37] font-sans font-bold uppercase tracking-[0.3em] text-sm hover:bg-[#D4AF37] hover:text-[#1A0B08] transition-all duration-300 text-center">
+              <div className="relative bg-[#3E2723] border border-[#D4AF37]/50 py-4 text-[#D4AF37] font-sans font-bold uppercase tracking-[0.3em] text-sm hover:bg-[#D4AF37] hover:text-[#1A0B08] transition-all duration-300 text-center cursor-pointer">
                 Entrer dans le Registre
               </div>
             </button>
@@ -103,8 +114,53 @@ function LoginScreen({ onLogin, error }: { onLogin: (pwd: string) => void; error
 
 // ===== TABLEAU DE BORD =====
 function Dashboard({ data, secret, onRefresh }: { data: AdminData; secret: string; onRefresh: () => void }) {
-  const [tab, setTab] = useState<"all" | "present" | "absent" | "gifts">("all");
+  const [tab, setTab] = useState<"all" | "present" | "absent" | "gifts" | "codes">("all");
   const [search, setSearch] = useState("");
+  const [newGuestName, setNewGuestName] = useState("");
+  const [creatingCode, setCreatingCode] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [localCodes, setLocalCodes] = useState<GuestCode[]>(data.codes || []);
+
+  useEffect(() => {
+    if (data.codes) setLocalCodes(data.codes);
+  }, [data.codes]);
+
+  const handleCreateCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newGuestName.trim()) return;
+
+    setCreatingCode(true);
+    try {
+      const res = await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret,
+          name: newGuestName.trim(),
+          maxGuests: 2,
+        }),
+      });
+
+      const json = await res.json();
+      if (json.success && json.guestCode) {
+        setLocalCodes((prev) => [json.guestCode, ...prev]);
+        setNewGuestName("");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCreatingCode(false);
+    }
+  };
+
+  const copyWhatsAppMessage = (name: string, code: string, id: string) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const msg = `Cher(e) ${name},\n\nVous êtes invité(e) au Mariage Royal d'Élisée & Lydia 👑 !\n\nVoici votre code d'accès personnel et confidentiel : *${code}*\n\nAccédez à votre invitation et confirmez votre venue ici :\n${origin}`;
+    
+    navigator.clipboard.writeText(msg);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 3000);
+  };
 
   const filtered = data.rsvps.filter((r) => {
     const matchSearch = r.name.toLowerCase().includes(search.toLowerCase()) || r.phone.includes(search);
@@ -154,10 +210,10 @@ function Dashboard({ data, secret, onRefresh }: { data: AdminData; secret: strin
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={onRefresh} className="flex items-center gap-2 px-4 py-2 border border-[#D4AF37]/30 text-[#D4AF37]/60 text-xs uppercase tracking-widest hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors">
+          <button onClick={onRefresh} className="flex items-center gap-2 px-4 py-2 border border-[#D4AF37]/30 text-[#D4AF37]/60 text-xs uppercase tracking-widest hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors cursor-pointer">
             <RefreshCw size={13} /> Actualiser
           </button>
-          <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-[#1A0B08] font-bold text-xs uppercase tracking-widest hover:bg-[#B87333] transition-colors">
+          <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-[#1A0B08] font-bold text-xs uppercase tracking-widest hover:bg-[#B87333] transition-colors cursor-pointer">
             <Download size={13} /> Export CSV
           </button>
         </div>
@@ -177,6 +233,90 @@ function Dashboard({ data, secret, onRefresh }: { data: AdminData; secret: strin
               <div className="text-[10px] text-[#FDFBF7]/40 uppercase tracking-widest">{card.label}</div>
             </motion.div>
           ))}
+        </div>
+
+        {/* ===== SECTION GÉNÉRATEUR DE CODES PERSONNELS D'ACCÈS ===== */}
+        <div className="border border-[#D4AF37]/30 bg-[#2A1610] p-6 rounded-sm shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-[#D4AF37]/20 pb-4">
+            <div className="flex items-center gap-3">
+              <KeyRound className="text-[#D4AF37]" size={22} />
+              <div>
+                <h3 className="text-base font-serif text-[#D4AF37] tracking-widest uppercase">
+                  Générateur de Codes Personnels d&apos;Accès 🔑
+                </h3>
+                <p className="text-xs text-[#FDFBF7]/50 font-sans">
+                  Créez un code d&apos;accès individuel par personne et envoyez-lui son invitation WhatsApp en 1 clic.
+                </p>
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1A0B08] border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono">
+              Code Secours Universel : <strong>EL2026</strong>
+            </div>
+          </div>
+
+          {/* Formulaire de création de code */}
+          <form onSubmit={handleCreateCode} className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={newGuestName}
+                onChange={(e) => setNewGuestName(e.target.value)}
+                placeholder="Nom & Prénom de l'invité (ex: Kouassi Jean, Tante Marie...)"
+                className="w-full py-3.5 px-4 bg-[#1A0B08] border border-[#D4AF37]/40 focus:border-[#D4AF37] text-sm text-[#FDFBF7] placeholder-[#FDFBF7]/30 focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={creatingCode || !newGuestName.trim()}
+              className="py-3.5 px-6 bg-gradient-to-r from-african-terra via-[#D4AF37] to-african-bronze text-[#1A0B08] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all cursor-pointer rounded-sm disabled:opacity-50"
+            >
+              <Plus size={16} />
+              <span>{creatingCode ? "Génération..." : "Générer le Code"}</span>
+            </button>
+          </form>
+
+          {/* Liste des codes créés */}
+          {localCodes.length > 0 && (
+            <div className="overflow-x-auto max-h-72 overflow-y-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-[#D4AF37]/20 text-[#D4AF37] text-left">
+                    <th className="py-2.5 px-3">Invité(e)</th>
+                    <th className="py-2.5 px-3">Code Personnel</th>
+                    <th className="py-2.5 px-3">Action WhatsApp</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#D4AF37]/10">
+                  {localCodes.map((gc) => (
+                    <tr key={gc.id} className="hover:bg-[#1A0B08]/50 transition-colors">
+                      <td className="py-3 px-3 font-semibold text-[#FDFBF7]">{gc.name}</td>
+                      <td className="py-3 px-3">
+                        <span className="font-mono text-sm px-2.5 py-1 bg-[#1A0B08] border border-[#D4AF37]/50 text-[#D4AF37] font-bold rounded-xs">
+                          {gc.code}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <button
+                          onClick={() => copyWhatsAppMessage(gc.name, gc.code, gc.id)}
+                          className="px-3 py-1.5 bg-[#2A3E2C] border border-green-500/50 text-green-300 hover:bg-green-600 hover:text-white transition-colors flex items-center gap-2 text-[11px] font-bold rounded-xs cursor-pointer"
+                        >
+                          {copiedId === gc.id ? (
+                            <>
+                              <Check size={13} /> Copié !
+                            </>
+                          ) : (
+                            <>
+                              <MessageSquareShare size={13} /> Copier l&apos;invitation WhatsApp
+                            </>
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

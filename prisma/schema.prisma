@@ -18,3 +18,12 @@ model Rsvp {
   gift      String?
   createdAt DateTime @default(now())
 }
+
+model GuestCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  maxGuests Int      @default(1)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

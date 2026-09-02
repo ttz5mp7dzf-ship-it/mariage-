@@ -532,7 +532,7 @@ function RoyalInvitationCard({
 // COMPOSANT PRINCIPAL : REGISTRE RSVP
 // ============================
 export default function RsvpMenu() {
-  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<FormData>();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [claimedGifts, setClaimedGifts] = useState<string[]>([]);
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
@@ -548,7 +548,13 @@ export default function RsvpMenu() {
       .then((res) => res.json())
       .then((data) => { if (data.success) setClaimedGifts(data.claimedGifts); })
       .catch(console.error);
-  }, []);
+
+    // Pré-remplir le nom de l'invité authentifié par son code d'accès
+    const savedName = sessionStorage.getItem("royal_guest_name");
+    if (savedName) {
+      setValue("name", savedName);
+    }
+  }, [setValue]);
 
   // ✅ Remonter automatiquement jusqu'à la carte d'invitation dès la validation
   useEffect(() => {
