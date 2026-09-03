@@ -27,7 +27,7 @@ export default function Localisation() {
                 <MapPin size={40} className="text-african-ivory" />
               </div>
               <h4 className="text-4xl md:text-5xl font-heading text-african-gold mb-4 drop-shadow-md">Sweetlife Garden</h4>
-              <p className="text-xl font-sans text-african-ivory/80 font-light mb-16 tracking-widest uppercase text-sm">Bounoumin</p>
+              <p className="text-xl font-sans text-african-ivory/80 font-light mb-16 tracking-widest uppercase text-sm">Bonoumin</p>
               
               <a 
                 href="https://maps.app.goo.gl/s9V8ekjjEpuWncrs5?g_st=iwb" 

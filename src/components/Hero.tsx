@@ -106,7 +106,7 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: doorsOpen ? 1 : 0, y: doorsOpen ? 0 : 20 }} transition={{ delay: 0.3, duration: 0.8 }}>
                <h1 className="text-5xl md:text-8xl font-heading text-african-ivory drop-shadow-[0_10px_20px_rgba(0,0,0,0.9)]">Élisée <span className="text-african-gold mx-2">&</span> Lydia</h1>
                <p className="text-african-gold text-lg md:text-2xl font-sans uppercase tracking-[0.4em] mt-4 mb-2 drop-shadow-md">Samedi 10 Octobre 2026</p>
-               <p className="text-african-ivory/90 font-sans tracking-[0.5em] text-sm uppercase font-light">12h00 • Sweetlife Garden, BOUNOUMIN</p>
+               <p className="text-african-ivory/90 font-sans tracking-[0.5em] text-sm uppercase font-light">12h00 • Sweetlife Garden, BONOUMIN</p>
             </motion.div>
           </div>
 

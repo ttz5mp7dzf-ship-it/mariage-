@@ -95,7 +95,7 @@ export default async function GuestProfile({ params }: { params: Promise<{ id: s
               <MapPin className="text-african-gold shrink-0" size={22} />
               <div>
                 <p className="text-[10px] font-sans uppercase tracking-widest text-african-sand/60">Lieu de la Réception</p>
-                <p className="text-base font-sans text-african-ivory font-bold">Sweetlife Garden, BOUNOUMIN</p>
+                <p className="text-base font-sans text-african-ivory font-bold">Sweetlife Garden, BONOUMIN</p>
               </div>
             </div>
           </div>

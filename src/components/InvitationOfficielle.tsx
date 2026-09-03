@@ -35,7 +35,7 @@ export default function InvitationOfficielle() {
           <div className="space-y-8 md:space-y-10 text-base sm:text-lg md:text-2xl font-sans font-light text-african-ivory leading-relaxed sm:leading-loose drop-shadow-sm">
             <p>Dieu nous fait la grâce immense de bientôt unir nos vies devant Lui, devant nos parents et devant les hommes.</p>
             
-            <p>C'est avec une joie débordante que nous vous convions à fêter cette union sacrée avec nous le <strong className="font-semibold text-african-gold">Samedi 10 octobre à 12h00</strong> à <strong className="font-semibold text-african-gold">Sweetlife Garden, Bounoumin</strong>.</p>
+            <p>C'est avec une joie débordante que nous vous convions à fêter cette union sacrée avec nous le <strong className="font-semibold text-african-gold">Samedi 10 octobre à 12h00</strong> à <strong className="font-semibold text-african-gold">Sweetlife Garden, Bonoumin</strong>.</p>
             
             <p>Votre présence sera pour nous un cadeau précieux. Nous vous serons reconnaissants de confirmer votre disponibilité et de choisir votre menu afin que nous puissions vous recevoir avec toute l'attention et l'honneur que vous méritez.</p>
             

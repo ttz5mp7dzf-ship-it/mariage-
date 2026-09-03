@@ -100,7 +100,7 @@ export default function Home() {
                   Élisée & Lydia
                 </div>
                 <p className="mt-6 text-xs font-sans uppercase tracking-[0.5em] text-african-ivory/50">
-                  Samedi 10 Octobre 2026 · Sweetlife Garden, Bounoumin
+                  Samedi 10 Octobre 2026 · Sweetlife Garden, Bonoumin
                 </p>
               </div>
             </footer>

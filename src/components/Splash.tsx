@@ -204,7 +204,7 @@ export default function Splash({ onEnter }: { onEnter: () => void }) {
                     </div>
 
                     <p className="mt-4 text-sm md:text-base font-sans uppercase tracking-[0.4em] text-african-sand/90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
-                      Samedi 10 Octobre 2026 · Sweetlife Garden, Bounoumin
+                      Samedi 10 Octobre 2026 · Sweetlife Garden, Bonoumin
                     </p>
                   </div>
                 </motion.div>

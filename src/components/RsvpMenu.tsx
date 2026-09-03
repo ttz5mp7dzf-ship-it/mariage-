@@ -360,7 +360,7 @@ async function generateCardBlob(data: FormData): Promise<string> {
 
   ctx.fillStyle = "#D4AF37";
   ctx.font = "bold 28px Georgia, serif";
-  ctx.fillText("📍  Sweetlife Garden, BOUNOUMIN", canvas.width / 2, detY + 50);
+  ctx.fillText("📍  Sweetlife Garden, BONOUMIN", canvas.width / 2, detY + 50);
 
   // 10. Ligne de clôture et Sceau royal
   const sealY = 1690;
