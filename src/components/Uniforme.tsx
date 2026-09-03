@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageCircle, ShoppingBag, CheckCircle, ZoomIn, X, Sparkles, Crown } from "lucide-react";
 import Image from "next/image";
 
@@ -34,6 +34,18 @@ export default function Uniforme() {
   const [selectedFormula, setSelectedFormula] = useState(PAGNE_FORMULAS[0]);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
+  // Bloquer le scroll d'arrière-plan quand le plein écran est ouvert
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
+
   const handleOrder = () => {
     const phoneNumber = "2250778270621";
     const message = encodeURIComponent(
@@ -45,28 +57,28 @@ export default function Uniforme() {
   return (
     <section id="pagne" className="py-28 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden bg-transparent scroll-mt-20">
       
-      {/* Texture de fond imprimé Wax ambré & terracotta */}
+      {/* Texture de fond imprimé Wax ambré & terracotta VIF */}
       <div
-        className="absolute inset-0 opacity-15 pointer-events-none"
+        className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
-          backgroundImage: "repeating-linear-gradient(45deg, var(--color-african-terra) 0px, var(--color-african-terra) 20px, var(--color-african-gold) 20px, var(--color-african-gold) 40px, var(--color-african-copper) 40px, var(--color-african-copper) 60px)",
+          backgroundImage: "repeating-linear-gradient(45deg, #E85D04 0px, #E85D04 20px, #FFB703 20px, #FFB703 40px, #F48C06 40px, #F48C06 60px, #2563EB 60px, #2563EB 70px)",
           backgroundSize: "200% 200%",
         }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#351009_90%)] opacity-90 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent,_#4A150B_85%)] opacity-90 pointer-events-none" />
 
       <div className="max-w-5xl mx-auto w-full relative z-10">
         
         {/* En-tête de section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-african-gold/15 border border-african-gold/40 text-african-gold text-xs uppercase tracking-[0.25em] font-bold mb-4 shadow-lg">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-african-gold/20 border border-african-gold/50 text-african-gold text-xs uppercase tracking-[0.25em] font-bold mb-4 shadow-xl">
             <Crown size={14} /> Dress Code & Tenue Officielle
           </div>
-          <h3 className="text-5xl md:text-7xl font-heading text-african-ivory mb-4 drop-shadow-lg">
+          <h3 className="text-5xl md:text-7xl font-heading text-african-ivory mb-3 drop-shadow-lg">
             Le Pagne Officiel du Mariage
           </h3>
-          <p className="text-lg md:text-2xl font-heading text-african-gold font-light max-w-2xl mx-auto leading-relaxed italic">
-            Voici l&apos;étoffe royale officielle sélectionnée par Élisée & Lydia pour illuminer la cérémonie.
+          <p className="text-lg md:text-2xl font-heading text-african-gold font-light max-w-2xl mx-auto leading-relaxed italic drop-shadow">
+            Découvrez l&apos;étoffe royale aux couleurs éclatantes choisie par Élisée & Lydia.
           </p>
         </div>
 
@@ -76,7 +88,7 @@ export default function Uniforme() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-16 bg-[#4A170E]/90 border-4 border-african-gold p-6 sm:p-10 shadow-[0_30px_90px_rgba(232,93,4,0.3)] rounded-sm relative overflow-hidden"
+          className="mb-14 bg-gradient-to-b from-[#5C1B0E] via-[#4A150B] to-[#380E07] border-4 border-african-gold p-5 sm:p-8 shadow-[0_30px_90px_rgba(232,93,4,0.4)] rounded-sm relative overflow-hidden"
         >
           {/* Décorations géométriques aux coins */}
           <div className="absolute top-2 left-2 w-8 h-8 border-t-4 border-l-4 border-african-gold" />
@@ -85,26 +97,26 @@ export default function Uniforme() {
           <div className="absolute bottom-2 right-2 w-8 h-8 border-b-4 border-r-4 border-african-gold" />
 
           {/* Banner titre du pagne */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-african-gold/30 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-5 border-b border-african-gold/30 pb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="text-african-gold animate-pulse" size={20} />
+              <Sparkles className="text-african-gold animate-pulse" size={22} />
               <span className="text-sm sm:text-base font-heading font-bold text-african-ivory uppercase tracking-[0.2em]">
                 Motif Authentique Sélectionné
               </span>
             </div>
             <button
               onClick={() => setIsLightboxOpen(true)}
-              className="px-4 py-2 bg-african-gold text-[#1A0B08] font-bold text-xs uppercase tracking-widest hover:bg-[#FFE082] transition-colors flex items-center gap-2 shadow-lg cursor-pointer rounded-xs"
+              className="px-5 py-2.5 bg-gradient-to-r from-african-gold to-african-copper text-[#1A0B08] font-bold text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 shadow-xl cursor-pointer rounded-xs"
             >
-              <ZoomIn size={16} />
-              <span>Agrandir / Plein écran</span>
+              <ZoomIn size={18} />
+              <span>Agrandir / Plein Écran</span>
             </button>
           </div>
 
-          {/* Cadre photo du pagne officiel (Cliquable pour zoom) */}
+          {/* Cadre photo du pagne officiel (Cliquable pour zoom immédiat sans scroll) */}
           <div
             onClick={() => setIsLightboxOpen(true)}
-            className="relative w-full aspect-[4/3] sm:aspect-[16/9] max-h-[500px] bg-[#200A05] border-2 border-african-gold/50 rounded-sm overflow-hidden cursor-pointer group shadow-2xl flex items-center justify-center p-3"
+            className="relative w-full aspect-[4/3] sm:aspect-[16/9] max-h-[520px] bg-[#200A05] border-2 border-african-gold/60 rounded-sm overflow-hidden cursor-pointer group shadow-2xl flex items-center justify-center p-2"
           >
             <Image
               src="/pagne-officiel.jpg"
@@ -120,8 +132,8 @@ export default function Uniforme() {
               <div className="w-16 h-16 rounded-full bg-african-gold text-[#1A0B08] flex items-center justify-center shadow-2xl transform scale-90 group-hover:scale-100 transition-transform">
                 <ZoomIn size={32} />
               </div>
-              <span className="text-xs font-sans uppercase tracking-[0.25em] text-african-gold font-bold bg-[#200A05]/90 px-4 py-2 rounded-xs border border-african-gold/50 shadow-xl">
-                Cliquer pour examiner le motif en haute définition
+              <span className="text-xs font-sans uppercase tracking-[0.25em] text-african-gold font-bold bg-[#200A05]/95 px-5 py-2.5 rounded-xs border border-african-gold/60 shadow-2xl">
+                Cliquer pour ouvrir directement en grand écran
               </span>
             </div>
           </div>
@@ -129,10 +141,10 @@ export default function Uniforme() {
 
         {/* ===== 2. CHOIX DES FORMULES DE PAGNES ===== */}
         <div className="text-center mb-8">
-          <h4 className="text-2xl sm:text-3xl font-heading text-african-gold mb-2">
+          <h4 className="text-2xl sm:text-4xl font-heading text-african-gold mb-2 drop-shadow-md">
             Choisissez votre Formule de Pagne
           </h4>
-          <p className="text-xs sm:text-sm font-sans text-african-sand/80 uppercase tracking-widest">
+          <p className="text-xs sm:text-sm font-sans text-african-sand/90 uppercase tracking-widest font-semibold">
             Sélectionnez le nombre de pagnes désiré
           </p>
         </div>
@@ -150,8 +162,8 @@ export default function Uniforme() {
                 onClick={() => setSelectedFormula(formula)}
                 className={`relative p-8 text-center border-2 transition-all duration-300 group overflow-hidden cursor-pointer rounded-sm ${
                   isSelected
-                    ? "border-african-gold bg-[#4A170E] shadow-[0_0_40px_rgba(255,183,3,0.4)] scale-[1.03]"
-                    : "border-african-gold/30 bg-[#250C07]/90 hover:border-african-gold/70 hover:bg-[#351009]"
+                    ? "border-african-gold bg-[#5C1B0E] shadow-[0_0_45px_rgba(255,183,3,0.5)] scale-[1.03]"
+                    : "border-african-gold/40 bg-[#351009]/90 hover:border-african-gold/80 hover:bg-[#4A150B]"
                 }`}
               >
                 {/* Check icon si sélectionné */}
@@ -159,7 +171,7 @@ export default function Uniforme() {
                   <>
                     <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-african-gold" />
                     <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-african-gold" />
-                    <CheckCircle className="absolute top-3.5 right-3.5 text-african-gold" size={20} />
+                    <CheckCircle className="absolute top-3.5 right-3.5 text-african-gold" size={22} />
                   </>
                 )}
 
@@ -171,11 +183,11 @@ export default function Uniforme() {
                     {formula.sublabel.split(" ")[0]}
                   </div>
 
-                  <div className="text-xs font-sans uppercase tracking-[0.4em] text-african-ivory/80 mb-3 font-bold">
+                  <div className="text-xs font-sans uppercase tracking-[0.4em] text-african-ivory mb-3 font-bold">
                     {formula.sublabel.split(" ").slice(1).join(" ")}
                   </div>
 
-                  <div className="h-px bg-african-gold/30 my-4" />
+                  <div className="h-px bg-african-gold/40 my-4" />
 
                   <h5
                     className="text-2xl font-heading mb-2 font-bold"
@@ -183,7 +195,7 @@ export default function Uniforme() {
                   >
                     {formula.label}
                   </h5>
-                  <p className="text-xs font-sans text-african-sand/80 leading-relaxed">
+                  <p className="text-xs font-sans text-african-sand/90 leading-relaxed font-medium">
                     {formula.description}
                   </p>
                 </div>
@@ -198,26 +210,26 @@ export default function Uniforme() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="bg-[#4A170E]/95 border-2 border-african-gold p-8 sm:p-10 shadow-[0_25px_70px_rgba(0,0,0,0.9)] rounded-sm max-w-2xl mx-auto"
+          className="bg-gradient-to-b from-[#5C1B0E] to-[#380E07] border-2 border-african-gold p-8 sm:p-10 shadow-[0_25px_80px_rgba(0,0,0,0.95)] rounded-sm max-w-2xl mx-auto"
         >
           <div className="flex items-center justify-center gap-3 mb-6 text-african-gold">
-            <ShoppingBag size={28} />
+            <ShoppingBag size={30} />
             <h4 className="text-3xl font-heading tracking-wide text-center">Commander mon Pagne</h4>
           </div>
 
           {/* Résumé de la formule */}
-          <div className="bg-[#200A05] border border-african-gold/40 p-5 mb-6 rounded-sm text-center">
+          <div className="bg-[#200A05] border border-african-gold/50 p-5 mb-6 rounded-sm text-center">
             <p className="text-[10px] uppercase tracking-[0.3em] text-african-copper mb-1 font-sans font-bold">Formule sélectionnée</p>
             <p className="text-2xl font-heading text-african-ivory">
               Formule {selectedFormula.label} — <span className="text-african-gold font-bold">{selectedFormula.sublabel}</span>
             </p>
-            <p className="text-xs text-african-sand/70 mt-1 font-sans">{selectedFormula.description}</p>
+            <p className="text-xs text-african-sand/80 mt-1 font-sans font-medium">{selectedFormula.description}</p>
           </div>
 
           {/* Sélecteur de quantité */}
           <div className="mb-8 flex flex-col items-center">
-            <label className="block text-african-ivory/80 text-xs font-sans uppercase tracking-[0.25em] mb-3 font-bold">Nombre d&apos;exemplaires</label>
-            <div className="flex items-center gap-6 bg-[#200A05] border-2 border-african-gold/50 p-2 rounded-sm">
+            <label className="block text-african-ivory text-xs font-sans uppercase tracking-[0.25em] mb-3 font-bold">Nombre d&apos;exemplaires</label>
+            <div className="flex items-center gap-6 bg-[#200A05] border-2 border-african-gold/60 p-2 rounded-sm">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 className="w-12 h-12 flex items-center justify-center text-african-gold hover:bg-african-gold/20 transition-colors text-3xl font-bold rounded-sm cursor-pointer"
@@ -237,7 +249,7 @@ export default function Uniforme() {
           </div>
 
           {/* Distributrice Officielle */}
-          <div className="bg-[#200A05] rounded-sm p-4 mb-8 border border-african-gold/30 flex flex-wrap items-center justify-between gap-2">
+          <div className="bg-[#200A05] rounded-sm p-4 mb-8 border border-african-gold/40 flex flex-wrap items-center justify-between gap-2">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-african-copper font-sans font-bold mb-0.5">Distributrice Officielle</p>
               <p className="text-xl font-heading text-african-ivory font-bold">Leticia Gbah</p>
@@ -258,68 +270,63 @@ export default function Uniforme() {
             </div>
           </button>
           
-          <p className="text-center text-xs text-african-sand/60 mt-4 italic font-sans">
+          <p className="text-center text-xs text-african-sand/70 mt-4 italic font-sans font-medium">
             Vous serez redirigé vers WhatsApp avec votre commande pré-remplie auprès de Leticia.
           </p>
         </motion.div>
       </div>
 
-      {/* ===== LIGHTBOX / VUE AGRANDIE EN PLEIN ÉCRAN ===== */}
+      {/* ===== LIGHTBOX / AGRANDISSEMENT PLEIN ÉCRAN IMMÉDIAT SANS SCROLL ===== */}
       <AnimatePresence>
         {isLightboxOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             onClick={() => setIsLightboxOpen(false)}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-8"
+            className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-4 overflow-hidden"
           >
-            {/* Bouton Fermer */}
+            {/* Bouton Fermer Fixe en haut à droite */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsLightboxOpen(false);
               }}
-              className="absolute top-5 right-5 sm:top-8 sm:right-8 z-50 p-3.5 bg-[#200A05] border-2 border-african-gold text-african-gold hover:bg-african-gold hover:text-[#1A0B08] transition-colors rounded-full shadow-2xl cursor-pointer"
-              aria-label="Fermer"
+              className="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100000] p-3.5 bg-[#200A05] border-2 border-african-gold text-african-gold hover:bg-african-gold hover:text-[#1A0B08] transition-colors rounded-full shadow-2xl cursor-pointer"
+              aria-label="Fermer la vue agrandie"
             >
               <X size={28} />
             </button>
 
-            {/* Titre Lightbox */}
-            <div className="mb-4 text-center z-10">
-              <span className="text-xs uppercase tracking-[0.4em] text-african-copper font-sans font-bold">Étoffes Royales</span>
-              <h4 className="text-2xl sm:text-4xl font-heading text-african-ivory mt-1">Pagne Officiel du Mariage</h4>
-            </div>
-
-            {/* Image Agrandie */}
+            {/* Container Image Agrandie : 100% VISIBLE DIRECTEMENT DANS LE VIEWPORT SANS AUCUN SCROLL */}
             <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl max-h-[75vh] aspect-[4/3] sm:aspect-[16/10] bg-[#200A05] border-2 border-african-gold p-3 shadow-[0_0_90px_rgba(255,183,3,0.3)] rounded-sm"
+              className="relative w-[96vw] max-w-5xl h-[88vh] max-h-[88vh] bg-[#200A05] border-2 border-african-gold p-2 shadow-[0_0_100px_rgba(255,183,3,0.4)] rounded-sm flex flex-col items-center justify-center overflow-hidden"
             >
+              {/* L'image remplit intelligemment 100% de l'espace disponible */}
               <div className="relative w-full h-full flex items-center justify-center">
                 <Image
                   src="/pagne-officiel.jpg"
-                  alt="Pagne Royal Élisée & Lydia Agrandissement"
+                  alt="Pagne Royal Élisée & Lydia Plein Écran"
                   fill
-                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  sizes="100vw"
                   className="object-contain"
                   priority
                 />
               </div>
-            </motion.div>
 
-            {/* Légende bas de lightbox */}
-            <div className="mt-4 text-center z-10 flex items-center gap-4">
-              <p className="text-xs text-african-sand/80 font-sans tracking-widest uppercase font-bold">
-                Pagne officiel de la cour royale d&apos;Élisée & Lydia
-              </p>
-            </div>
+              {/* Badge indicatif sous l'image */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 bg-[#200A05]/90 border border-african-gold/60 px-4 py-1.5 rounded-full shadow-2xl">
+                <p className="text-[11px] text-african-gold font-sans uppercase tracking-widest font-bold whitespace-nowrap">
+                  Pagne Officiel · Élisée & Lydia 2026
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

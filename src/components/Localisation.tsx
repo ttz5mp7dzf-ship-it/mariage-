@@ -11,7 +11,7 @@ export default function Localisation() {
           <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Le Lieu</h2>
           <h3 className="text-5xl md:text-7xl font-heading text-african-ivory mb-16 drop-shadow-lg">Localisation Royale</h3>
           
-          <div className="relative bg-[#1A0B08]/90 backdrop-blur-md p-12 md:p-24 shadow-[0_30px_60px_rgba(0,0,0,0.8)] border-4 border-african-gold max-w-2xl mx-auto overflow-hidden">
+          <div className="relative bg-[#4A150B]/95 backdrop-blur-md p-12 md:p-24 shadow-[0_30px_70px_rgba(234,88,12,0.35)] border-4 border-african-gold max-w-2xl mx-auto overflow-hidden rounded-sm">
             
             {/* Texture de fond géométrique (Tissu africain) */}
             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'40\\' viewBox=\\'0 0 40 40\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cpath d=\\'M20 0L40 20L20 40L0 20L20 0z\\' fill=\\'%23CD7F32\\' fill-opacity=\\'1\\' fill-rule=\\'evenodd\\'/%3E%3C/svg%3E')" }}></div>

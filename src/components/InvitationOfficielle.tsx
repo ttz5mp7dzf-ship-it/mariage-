@@ -20,7 +20,7 @@ export default function InvitationOfficielle() {
         whileInView={{ opacity: 1, scaleY: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 mt-24 max-w-4xl w-full bg-[#1A0B08]/95 shadow-[0_30px_60px_rgba(0,0,0,0.9)] overflow-hidden border-l-4 border-r-4 border-african-gold"
+        className="relative z-10 mt-24 max-w-4xl w-full bg-[#4A150B]/95 shadow-[0_30px_70px_rgba(234,88,12,0.35)] overflow-hidden border-l-4 border-r-4 border-african-gold rounded-sm"
       >
         <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/60 to-transparent pointer-events-none"></div>
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>

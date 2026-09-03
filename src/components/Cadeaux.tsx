@@ -40,7 +40,7 @@ export default function Cadeaux() {
           <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Les offrandes</h2>
           <h3 className="text-4xl md:text-6xl font-heading text-african-ivory mb-8 drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">Voici ce qui nous ferait plaisir</h3>
           
-          <div className="max-w-3xl mx-auto bg-[#3E2723]/80 border-2 border-african-gold p-6 shadow-xl relative overflow-hidden">
+          <div className="max-w-3xl mx-auto bg-[#4A150B]/90 border-2 border-african-gold p-6 shadow-[0_15px_40px_rgba(234,88,12,0.25)] relative overflow-hidden rounded-sm">
             {/* Corner ornaments */}
             <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-african-gold m-2"></div>
             <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-african-gold m-2"></div>
@@ -63,7 +63,7 @@ export default function Cadeaux() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.8 }}
-                className="group relative bg-[#1A0B08] p-2 flex flex-col hover:-translate-y-2 transition-transform duration-500 shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
+                className="group relative bg-[#4A150B] p-2 flex flex-col hover:-translate-y-2 transition-transform duration-500 shadow-[0_20px_40px_rgba(234,88,12,0.2)] rounded-sm border border-african-gold/30"
               >
                 {/* Bordure tribale complexe */}
                 <div className="absolute inset-0 border border-african-bronze m-2 opacity-50 z-0"></div>
@@ -73,19 +73,19 @@ export default function Cadeaux() {
                 <div className="absolute top-0 inset-x-0 h-4 bg-repeat-x opacity-40 group-hover:opacity-100 transition-opacity z-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'40\\' height=\\'10\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cpolygon points=\\'5,0 10,5 5,10 0,5\\' fill=\\'%23CD7F32\\'/%3E%3Ccircle cx=\\'20\\' cy=\\'5\\' r=\\'4\\' fill=\\'none\\' stroke=\\'%23D4AF37\\' stroke-width=\\'1\\'/%3E%3Cpolygon points=\\'30,0 35,5 30,10 25,5\\' fill=\\'%23CD7F32\\'/%3E%3C/svg%3E')" }}></div>
 
                 <div className="relative w-full h-48 overflow-hidden z-10 border-b-2 border-african-gold/50">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B08] via-transparent to-[#1A0B08]/40 z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#4A150B] via-transparent to-[#4A150B]/30 z-10"></div>
                   <Image 
                     src={cadeau.image} 
                     alt={cadeau.title} 
                     fill 
-                    className="object-cover object-center group-hover:scale-110 group-hover:opacity-80 transition-all duration-700 opacity-60 mix-blend-luminosity sepia-[0.3]" 
+                    className="object-cover object-center group-hover:scale-110 transition-all duration-700 opacity-90" 
                   />
-                  <div className="absolute top-4 left-4 z-20 bg-[#1A0B08] p-3 border border-african-gold/50 shadow-lg">
+                  <div className="absolute top-4 left-4 z-20 bg-[#351009] p-3 border border-african-gold shadow-lg">
                     <Icon className="text-african-gold" size={24} />
                   </div>
                 </div>
 
-                <div className="relative z-10 p-6 flex flex-col flex-grow text-center items-center justify-center bg-[#1A0B08]/90 backdrop-blur-md">
+                <div className="relative z-10 p-6 flex flex-col flex-grow text-center items-center justify-center bg-[#4A150B]">
                   <h4 className="text-xl font-heading text-african-ivory tracking-wide mb-2">{cadeau.title}</h4>
                   <p className="text-xs font-sans text-african-ivory/60 mb-6 italic">{cadeau.desc}</p>
                   

@@ -717,7 +717,7 @@ export default function RsvpMenu() {
                     { title: "Plats Principaux", items: plats, field: "mainDish" as const },
                     { title: "Accompagnements", items: accompagnements, field: "sideDish" as const },
                   ].map(({ title, items, field }) => (
-                    <div key={field} className="bg-[#3E2723]/90 p-8 border-2 border-african-gold/40 shadow-xl backdrop-blur-md relative">
+                    <div key={field} className="bg-[#4A150B]/95 p-8 border-2 border-african-gold/60 shadow-[0_15px_40px_rgba(234,88,12,0.25)] relative rounded-sm">
                       <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-african-gold m-2" />
                       <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-african-gold m-2" />
                       <h5 className="text-xs font-sans font-bold uppercase tracking-[0.2em] text-african-gold mb-8 text-center border-b border-african-gold/30 pb-4">{title}</h5>
@@ -741,7 +741,7 @@ export default function RsvpMenu() {
                   <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Votre Offrande</h4>
                   <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-gold mb-10">Participez à notre joie</p>
 
-                  <div className="max-w-2xl mx-auto bg-[#3E2723]/90 p-8 border-2 border-african-gold/40 shadow-xl backdrop-blur-md relative">
+                  <div className="max-w-2xl mx-auto bg-[#4A150B]/95 p-8 border-2 border-african-gold/60 shadow-[0_15px_40px_rgba(234,88,12,0.25)] relative rounded-sm">
                     <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-african-gold m-4 opacity-50" />
                     <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-african-gold m-4 opacity-50" />
 
