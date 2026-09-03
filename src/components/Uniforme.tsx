@@ -55,7 +55,7 @@ export default function Uniforme() {
   };
 
   return (
-    <section id="pagne" className="py-28 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden bg-transparent scroll-mt-20">
+    <section id="pagne" className="py-24 px-4 relative flex items-center justify-center min-h-[70vh] overflow-hidden bg-transparent scroll-mt-20">
       
       {/* Texture de fond imprimé Wax ambré & terracotta VIF */}
       <div
@@ -78,30 +78,24 @@ export default function Uniforme() {
             Le Pagne Officiel du Mariage
           </h3>
           <p className="text-lg md:text-2xl font-heading text-african-gold font-light max-w-2xl mx-auto leading-relaxed italic drop-shadow">
-            Découvrez l&apos;étoffe royale aux couleurs éclatantes choisie par Élisée & Lydia.
+            L&apos;étoffe royale officielle aux couleurs chaudes & éclatantes sélectionnée par Élisée & Lydia.
           </p>
         </div>
 
-        {/* ===== 1. VITRINE DU PAGNE EN PREMIER (GRANDE IMAGE MISE EN AVANT) ===== */}
+        {/* ===== 1. VITRINE DU PAGNE EN PREMIER (PRÉSENTATION SUBLIME SANS CADRE LOURD) ===== */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-14 bg-gradient-to-b from-[#5C1B0E] via-[#4A150B] to-[#380E07] border-4 border-african-gold p-5 sm:p-8 shadow-[0_30px_90px_rgba(232,93,4,0.4)] rounded-sm relative overflow-hidden"
+          className="mb-14 bg-gradient-to-b from-[#5C1B0E] via-[#4A150B] to-[#380E07] p-4 sm:p-6 shadow-[0_30px_90px_rgba(232,93,4,0.4)] rounded-sm relative overflow-hidden border border-african-gold/40"
         >
-          {/* Décorations géométriques aux coins */}
-          <div className="absolute top-2 left-2 w-8 h-8 border-t-4 border-l-4 border-african-gold" />
-          <div className="absolute top-2 right-2 w-8 h-8 border-t-4 border-r-4 border-african-gold" />
-          <div className="absolute bottom-2 left-2 w-8 h-8 border-b-4 border-l-4 border-african-gold" />
-          <div className="absolute bottom-2 right-2 w-8 h-8 border-b-4 border-r-4 border-african-gold" />
-
           {/* Banner titre du pagne */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-5 border-b border-african-gold/30 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-4 border-b border-african-gold/30 pb-3">
             <div className="flex items-center gap-2">
               <Sparkles className="text-african-gold animate-pulse" size={22} />
               <span className="text-sm sm:text-base font-heading font-bold text-african-ivory uppercase tracking-[0.2em]">
-                Motif Authentique Sélectionné
+                Motif Authentique Découpé & Nettoyé
               </span>
             </div>
             <button
@@ -113,14 +107,14 @@ export default function Uniforme() {
             </button>
           </div>
 
-          {/* Cadre photo du pagne officiel (Cliquable pour zoom immédiat sans scroll) */}
+          {/* Photo du pagne officiel rognée proprement et présentée sans cadre obstruant */}
           <div
             onClick={() => setIsLightboxOpen(true)}
-            className="relative w-full aspect-[4/3] sm:aspect-[16/9] max-h-[520px] bg-[#200A05] border-2 border-african-gold/60 rounded-sm overflow-hidden cursor-pointer group shadow-2xl flex items-center justify-center p-2"
+            className="relative w-full aspect-[4/3] sm:aspect-[16/9] max-h-[550px] bg-[#200A05] rounded-sm overflow-hidden cursor-pointer group shadow-2xl flex items-center justify-center p-1"
           >
             <Image
               src="/pagne-officiel.jpg"
-              alt="Pagne Officiel Mariage Élisée & Lydia"
+              alt="Pagne Officiel Mariage Élisée & Lydia Rogné"
               fill
               sizes="(max-width: 1200px) 100vw, 1200px"
               className="object-contain transition-transform duration-700 group-hover:scale-105"
@@ -128,12 +122,12 @@ export default function Uniforme() {
             />
 
             {/* Overlay Loupe au survol */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+            <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
               <div className="w-16 h-16 rounded-full bg-african-gold text-[#1A0B08] flex items-center justify-center shadow-2xl transform scale-90 group-hover:scale-100 transition-transform">
                 <ZoomIn size={32} />
               </div>
               <span className="text-xs font-sans uppercase tracking-[0.25em] text-african-gold font-bold bg-[#200A05]/95 px-5 py-2.5 rounded-xs border border-african-gold/60 shadow-2xl">
-                Cliquer pour ouvrir directement en grand écran
+                Cliquer pour ouvrir directement en grand écran sans cadre
               </span>
             </div>
           </div>
@@ -276,14 +270,14 @@ export default function Uniforme() {
         </motion.div>
       </div>
 
-      {/* ===== LIGHTBOX / AGRANDISSEMENT PLEIN ÉCRAN IMMÉDIAT SANS SCROLL ===== */}
+      {/* ===== LIGHTBOX / AGRANDISSEMENT PLEIN ÉCRAN IMMÉDIAT SANS CADRE LOURD ===== */}
       <AnimatePresence>
         {isLightboxOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             onClick={() => setIsLightboxOpen(false)}
             className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-4 overflow-hidden"
           >
@@ -299,29 +293,29 @@ export default function Uniforme() {
               <X size={28} />
             </button>
 
-            {/* Container Image Agrandie : 100% VISIBLE DIRECTEMENT DANS LE VIEWPORT SANS AUCUN SCROLL */}
+            {/* Container Image Agrandie : SANS CADRE OBSTRUANT, 100% VISIBLE DIRECTEMENT DANS LE VIEWPORT */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.25 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-[96vw] max-w-5xl h-[88vh] max-h-[88vh] bg-[#200A05] border-2 border-african-gold p-2 shadow-[0_0_100px_rgba(255,183,3,0.4)] rounded-sm flex flex-col items-center justify-center overflow-hidden"
+              className="relative w-[96vw] max-w-6xl h-[92vh] max-h-[92vh] flex flex-col items-center justify-center overflow-hidden"
             >
-              {/* L'image remplit intelligemment 100% de l'espace disponible */}
+              {/* L'image rognée remplit tout le viewport en object-contain ultra net */}
               <div className="relative w-full h-full flex items-center justify-center">
                 <Image
                   src="/pagne-officiel.jpg"
-                  alt="Pagne Royal Élisée & Lydia Plein Écran"
+                  alt="Pagne Royal Élisée & Lydia Plein Écran Rogné"
                   fill
                   sizes="100vw"
-                  className="object-contain"
+                  className="object-contain drop-shadow-[0_10px_50px_rgba(255,183,3,0.35)]"
                   priority
                 />
               </div>
 
-              {/* Badge indicatif sous l'image */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 bg-[#200A05]/90 border border-african-gold/60 px-4 py-1.5 rounded-full shadow-2xl">
+              {/* Badge indicatif discret sous l'image */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 bg-[#200A05]/95 border border-african-gold/60 px-5 py-1.5 rounded-full shadow-2xl">
                 <p className="text-[11px] text-african-gold font-sans uppercase tracking-widest font-bold whitespace-nowrap">
                   Pagne Officiel · Élisée & Lydia 2026
                 </p>
