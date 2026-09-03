@@ -548,13 +548,7 @@ export default function RsvpMenu() {
       .then((res) => res.json())
       .then((data) => { if (data.success) setClaimedGifts(data.claimedGifts); })
       .catch(console.error);
-
-    // Pré-remplir le nom de l'invité authentifié par son code d'accès
-    const savedName = sessionStorage.getItem("royal_guest_name");
-    if (savedName) {
-      setValue("name", savedName);
-    }
-  }, [setValue]);
+  }, []);
 
   // ✅ Remonter automatiquement jusqu'à la carte d'invitation dès la validation
   useEffect(() => {

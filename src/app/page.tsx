@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import AccessGate from "@/components/AccessGate";
 import Splash from "@/components/Splash";
 import Hero from "@/components/Hero";
 import GalerieRoyale from "@/components/GalerieRoyale";
@@ -15,25 +14,13 @@ import AfricanDivider from "@/components/AfricanDivider";
 import RoyalNavbar from "@/components/RoyalNavbar";
 
 export default function Home() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
-
-  const handleUnlock = (guestInfo: { name: string; code: string }) => {
-    setIsUnlocked(true);
-  };
 
   return (
     <>
-      {/* Écran de verrouillage par code personnel */}
-      {!isUnlocked && (
-        <AccessGate onUnlock={handleUnlock} />
-      )}
-
-      {/* Splash screen de première entrée */}
+      {/* Splash screen de première entrée (Porte Royale) */}
       <AnimatePresence>
-        {isUnlocked && showSplash && (
-          <Splash onEnter={() => setShowSplash(false)} />
-        )}
+        {showSplash && <Splash onEnter={() => setShowSplash(false)} />}
       </AnimatePresence>
 
       <main className="min-h-screen relative font-sans text-african-ivory bg-[#2A1610] overflow-hidden">
@@ -42,7 +29,7 @@ export default function Home() {
         {/* ===== FOND FIXE : Coucher de soleil africain ===== */}
         <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#3E2723] via-[#2A1610] to-[#1A0B08]" />
 
-        {/* Halos de lumière chaude */}
+        {/* Halos de lumière chaude (compatible 100% Safari & tous navigateurs) */}
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
           <div
             className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] rounded-full opacity-30"
@@ -65,7 +52,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full overflow-hidden">
-          <Hero isEntered={isUnlocked && !showSplash} />
+          <Hero isEntered={!showSplash} />
 
           <AfricanDivider />
 
