@@ -17,6 +17,7 @@ type FormData = {
   giftCategory: string;
   giftSubCategory: string;
   giftCustom: string;
+  rsvpId?: string;
 };
 
 const plats = [
@@ -304,17 +305,13 @@ async function generateCardBlob(data: FormData): Promise<string> {
 
   // Note: gift/offrande NOT displayed on card (confidential)
 
-  // 8. QR CODE UNIQUE — Anti-transfert
-  // Hash unique basé sur nom + téléphone pour rendre l'invitation personnelle
-  const qrPayload = JSON.stringify({
-    n: data.name,
-    t: data.phone,
-    d: "2026-10-10",
-    h: btoa(`${data.name}|${data.phone}|EL2026`).slice(0, 16),
-  });
+  // 8. QR CODE UNIQUE SCANNABLE PAR SMARTPHONE
+  // Encode l'URL officielle du passe-droit invité : quand scanné par un téléphone, ouvre le profil de l'invité !
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://mariage-elisee-lydia.vercel.app";
+  const qrTargetUrl = data.rsvpId ? `${origin}/guest/${data.rsvpId}` : `${origin}/#rsvp`;
 
   try {
-    const qrDataUrl = await QRCode.toDataURL(qrPayload, {
+    const qrDataUrl = await QRCode.toDataURL(qrTargetUrl, {
       errorCorrectionLevel: "H",
       margin: 1,
       width: 200,
@@ -343,12 +340,12 @@ async function generateCardBlob(data: FormData): Promise<string> {
     ctx.fillStyle = "#CD7F32";
     ctx.font = "bold 16px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("INVITATION PERSONNELLE & CONFIDENTIELLE", canvas.width / 2, qrY + qrSize + 30);
+    ctx.fillText("SCANNEZ POUR VÉRIFIER L'INVITATION", canvas.width / 2, qrY + qrSize + 30);
 
     ctx.fillStyle = "#FDFBF7";
-    ctx.globalAlpha = 0.5;
+    ctx.globalAlpha = 0.6;
     ctx.font = "14px sans-serif";
-    ctx.fillText("Ce QR code est unique et non transférable", canvas.width / 2, qrY + qrSize + 52);
+    ctx.fillText("Scannez avec votre appareil photo pour voir le passe-droit", canvas.width / 2, qrY + qrSize + 52);
     ctx.globalAlpha = 1;
   } catch {
     // QR code en erreur — continuer sans
@@ -584,7 +581,8 @@ export default function RsvpMenu() {
       });
 
       if (response.ok) {
-        setSubmittedData(data);
+        const resJson = await response.json();
+        setSubmittedData({ ...data, rsvpId: resJson.rsvp?.id });
         setStatus("success");
       } else {
         setStatus("error");
