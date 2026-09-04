@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { label: "Accueil", href: "#accueil", icon: Crown },
   { label: "Invitation", href: "#invitation", icon: Heart },
   { label: "Galerie", href: "#histoire", icon: ImageIcon },
-  { label: "Offrandes", href: "#cadeaux", icon: Gift },
+  { label: "Cadeaux", href: "#cadeaux", icon: Gift },
   { label: "Présence", href: "#rsvp", icon: CheckCircle },
   { label: "L'Étoffe", href: "#pagne", icon: ShoppingBag },
   { label: "Lieu", href: "#localisation", icon: MapPin },

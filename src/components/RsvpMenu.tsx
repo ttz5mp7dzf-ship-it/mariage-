@@ -63,7 +63,6 @@ const giftCategories: Record<string, string[]> = {
     "spa", "massage", "escapade", "activité culturelle", "activité touristique",
     "expérience insolite", "séance photo", "activité détente", "Autre expérience",
   ],
-  "Don en numéraire": [],
   "Je n'ai pas de cadeau": [],
 };
 
@@ -303,7 +302,7 @@ async function generateCardBlob(data: FormData): Promise<string> {
     ctx.globalAlpha = 1;
   }
 
-  // Note: gift/offrande NOT displayed on card (confidential)
+  // Note: gift/cadeau NOT displayed on card (confidential)
 
   // 8. QR CODE UNIQUE SCANNABLE PAR SMARTPHONE
   // Encode l'URL officielle du passe-droit invité : quand scanné par un téléphone, ouvre le profil de l'invité !
@@ -564,9 +563,7 @@ export default function RsvpMenu() {
 
     let finalGift: string | null = null;
     if (data.present === "oui" && data.giftCategory && data.giftCategory !== "Je n'ai pas de cadeau") {
-      if (data.giftCategory === "Don en numéraire") {
-        finalGift = "Don en numéraire";
-      } else if (data.giftSubCategory?.startsWith("Autre")) {
+      if (data.giftSubCategory?.startsWith("Autre")) {
         finalGift = `${data.giftCategory} - ${data.giftCustom}`;
       } else if (data.giftSubCategory) {
         finalGift = `${data.giftCategory} - ${data.giftSubCategory}`;
@@ -736,9 +733,9 @@ export default function RsvpMenu() {
                   ))}
                 </div>
 
-                {/* SECTION CADEAUX & OFFRANDES */}
+                {/* SECTION CADEAUX */}
                 <div className="mt-20 text-center">
-                  <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Votre Offrande</h4>
+                  <h4 className="text-4xl md:text-5xl font-heading text-african-ivory mb-2">Votre Cadeau</h4>
                   <p className="text-sm font-sans uppercase tracking-[0.2em] text-african-gold mb-10">Participez à notre joie</p>
 
                   <div className="max-w-2xl mx-auto bg-[#4A150B]/95 p-8 border-2 border-african-gold/60 shadow-[0_15px_40px_rgba(234,88,12,0.25)] relative rounded-sm">
@@ -746,12 +743,12 @@ export default function RsvpMenu() {
                     <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-african-gold m-4 opacity-50" />
 
                     <p className="text-[11px] text-african-sand/80 uppercase tracking-widest mb-6 border border-african-bronze/50 p-3 bg-[#1A0B08]/70">
-                      Pour éviter les doublons, sélectionnez l'offrande que vous souhaitez offrir. Les cadeaux grisés sont déjà réservés.
+                      Pour éviter les doublons, sélectionnez le cadeau que vous souhaitez offrir. Les cadeaux grisés sont déjà réservés.
                     </p>
 
                     {/* Catégorie */}
                     <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center mt-8">
-                      Nature de votre offrande
+                      Nature de votre cadeau
                     </label>
                     <select
                       {...register("giftCategory")}

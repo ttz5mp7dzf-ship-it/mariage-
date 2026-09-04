@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Gift, Home, Wallet, Plane } from "lucide-react";
+import { Gift, Home, Plane } from "lucide-react";
 
 const cadeauxList = [
   { 
@@ -23,12 +23,6 @@ const cadeauxList = [
     desc: "Des souvenirs inoubliables.",
     image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" 
   },
-  { 
-    title: "Don numéraire",
-    icon: Wallet,
-    desc: "Une participation libre.",
-    image: "/enveloppe.jpg" 
-  },
 ];
 
 export default function Cadeaux() {
@@ -37,7 +31,7 @@ export default function Cadeaux() {
       
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Les offrandes</h2>
+          <h2 className="text-sm font-sans uppercase tracking-[0.5em] text-african-copper mb-6 drop-shadow-md">Les cadeaux</h2>
           <h3 className="text-4xl md:text-6xl font-heading text-african-ivory mb-8 drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">Voici ce qui nous ferait plaisir</h3>
           
           <div className="max-w-3xl mx-auto bg-[#4A150B]/90 border-2 border-african-gold p-6 shadow-[0_15px_40px_rgba(234,88,12,0.25)] relative overflow-hidden rounded-sm">
@@ -53,7 +47,7 @@ export default function Cadeaux() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {cadeauxList.map((cadeau, idx) => {
             const Icon = cadeau.icon;
             return (

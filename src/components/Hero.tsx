@@ -165,7 +165,7 @@ export default function Hero({ isEntered = false }: { isEntered?: boolean }) {
             <div className="absolute inset-0 bg-gradient-to-r from-african-terra to-african-brown rounded-full blur-md opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative bg-[#2A1610] border border-african-terra/50 px-8 py-4 rounded-full flex items-center justify-center gap-3 text-african-ivory font-sans uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform duration-300">
               <Gift size={18} className="text-african-terra" />
-              <span>Offrandes</span>
+              <span>Cadeaux</span>
             </div>
           </a>
 
