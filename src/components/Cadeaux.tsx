@@ -8,19 +8,16 @@ const cadeauxList = [
   { 
     title: "Mobilier",
     icon: Home,
-    desc: "Pour construire notre cocon royal.",
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80" 
   },
   { 
     title: "Électroménager",
     icon: Gift,
-    desc: "L'équipement pour notre quotidien.",
     image: "/electromenager.jpg" 
   },
   { 
     title: "Expériences",
     icon: Plane,
-    desc: "Des souvenirs inoubliables.",
     image: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" 
   },
 ];
@@ -80,8 +77,7 @@ export default function Cadeaux() {
                 </div>
 
                 <div className="relative z-10 p-6 flex flex-col flex-grow text-center items-center justify-center bg-[#4A150B]">
-                  <h4 className="text-xl font-heading text-african-ivory tracking-wide mb-2">{cadeau.title}</h4>
-                  <p className="text-xs font-sans text-african-ivory/60 mb-6 italic">{cadeau.desc}</p>
+                  <h4 className="text-xl font-heading text-african-ivory tracking-wide mb-6">{cadeau.title}</h4>
                   
                   <a href="#rsvp" className="mt-auto px-6 py-3 w-full border border-african-bronze text-african-gold text-xs uppercase tracking-widest font-bold group-hover:bg-african-gold group-hover:text-[#1A0B08] transition-colors duration-300">
                     Offrir ce cadeau
