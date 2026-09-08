@@ -49,6 +49,7 @@ yarn-error.log*
 *credentials*
 *passwords*
 *.token
+.neon
 
 # vercel
 .vercel
