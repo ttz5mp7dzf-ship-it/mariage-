@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // Secret admin officiel (avec fallback garanti si la variable d'env Vercel n'est pas définie)
 const OFFICIAL_ADMIN_SECRET = process.env.ADMIN_SECRET || "EliseeEtLydia2026";

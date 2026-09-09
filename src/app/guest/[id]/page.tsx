@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { CheckCircle, UtensilsCrossed, Users, Calendar, MapPin, ShieldCheck, Crown } from "lucide-react";
-
-const prisma = new PrismaClient();
 
 export default async function GuestProfile({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
