@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         name: body.name.trim(),
         phone: body.phone?.trim() || "",
         present: body.present === "oui",
-        groupSize: body.groupSize ? parseInt(String(body.groupSize)) : 1,
+        groupSize: 1, // Invitation strictement individuelle et unique
         mainDish: body.mainDish || null,
         sideDish: body.sideDish || null,
         gift: body.gift || null,

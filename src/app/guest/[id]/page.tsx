@@ -65,8 +65,8 @@ export default async function GuestProfile({ params }: { params: Promise<{ id: s
             <div className="flex items-center gap-4">
               <Users className="text-african-gold shrink-0" size={22} />
               <div>
-                <p className="text-[10px] font-sans uppercase tracking-widest text-african-sand/60">Nombre d&apos;invités</p>
-                <p className="text-base font-sans text-african-ivory font-bold">{guest.groupSize || 1} Personne(s) réservée(s)</p>
+                <p className="text-[10px] font-sans uppercase tracking-widest text-african-sand/60">Type d&apos;invitation</p>
+                <p className="text-base font-sans text-african-ivory font-bold">Invitation Personnelle & Unique (1 Personne)</p>
               </div>
             </div>
 

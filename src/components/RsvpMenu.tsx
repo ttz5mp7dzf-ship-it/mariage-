@@ -261,7 +261,7 @@ async function generateCardBlob(data: FormData): Promise<string> {
 
   // Statut présence
   const presenceText = data.present === "oui"
-    ? `✓  Présence confirmée (${data.groupSize || 1} personne${(data.groupSize || 1) > 1 ? "s" : ""})`
+    ? "✓  Présence confirmée (Invitation Personnelle - 1 pers.)"
     : data.present === "non"
     ? "✗  Absent(e) de cœur"
     : "Présence à confirmer";
@@ -528,7 +528,11 @@ function RoyalInvitationCard({
 // COMPOSANT PRINCIPAL : REGISTRE RSVP
 // ============================
 export default function RsvpMenu() {
-  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<FormData>({
+    defaultValues: {
+      groupSize: 1,
+    },
+  });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [claimedGifts, setClaimedGifts] = useState<string[]>([]);
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
@@ -684,23 +688,7 @@ export default function RsvpMenu() {
           {/* Section conditionnelle si présent */}
           <AnimatePresence>
             {present === "oui" && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-20 overflow-hidden">
-
-                {/* NOMBRE D'INVITÉS */}
-                <div className="relative group max-w-md mx-auto w-full mb-20">
-                  <label className="block text-african-ivory text-xs font-bold mb-3 uppercase tracking-widest text-center">
-                    Nombre de personnes
-                  </label>
-                  <div className="flex items-center justify-center border-b-2 border-african-gold/50 group-focus-within:border-african-gold transition-colors">
-                    <Users className="text-african-gold mr-4" size={20} />
-                    <input
-                      type="number" min="1" max="5"
-                      {...register("groupSize", { required: true, valueAsNumber: true })}
-                      className="w-32 text-center py-4 bg-transparent focus:outline-none text-2xl font-sans text-african-gold font-bold"
-                      defaultValue={1}
-                    />
-                  </div>
-                </div>
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-16 overflow-hidden">
 
                 {/* MENU GASTRONOMIQUE */}
                 <div className="text-center mb-16">
